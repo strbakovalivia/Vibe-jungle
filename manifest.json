@@ -1,7 +1,7 @@
 {
   "name": "Vibe Jungle Pro",
   "short_name": "VibeJungle",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f8faf8",
   "theme_color": "#064e3b",
@@ -9,7 +9,8 @@
     {
       "src": "https://cdn-icons-png.flaticon.com/512/628/628283.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
