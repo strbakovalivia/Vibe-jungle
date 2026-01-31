@@ -1,4 +1,3 @@
-// Service Worker pro Vibe Jungle
-self.addEventListener('fetch', function(event) {
-    // Teď nemusí nic dělat, jen tu musí existovat
+self.addEventListener('fetch', (event) => {
+  // Jen prázdný handler, aby byl Chrome spokojený
 });
