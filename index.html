@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
     <style> [x-cloak] { display: none !important; } </style>
 </head>
 <body class="bg-[#f8faf8] p-4 md:p-8 font-['Plus_Jakarta_Sans']" x-data="plantApp()">
@@ -68,10 +69,10 @@
                             </div>
                         </div>
                         <div class="w-full bg-gray-100 h-4 rounded-full overflow-hidden p-1">
-                            <div class="h-full rounded-full transition-all duration-1000" :class="plant.daysLeft <= 0 ? 'bg-red-500' : 'bg-green-500'" :style="`width: ${Math.max(0, (plant.daysLeft / (season === 'summer' ? plant.summerDays : plant.winterDays)) * 100)}%`" ></div>
+                            <div class="h-full rounded-full transition-all duration-1000" :class="plant.daysLeft <= 0 ? 'bg-red-500' : 'bg-green-500'" :style="`width: ${Math.max(0, (plant.daysLeft / (season === 'summer' ? (plant.summerDays || 7) : (plant.winterDays || 14))) * 100)}%`" ></div>
                         </div>
                     </div>
-                    <button @click="waterPlant(plant.id)" class="w-full py-5 bg-green-600 text-white font-black rounded-2xl hover:bg-green-700 transition-all shadow-xl active:scale-95"> ZALÍT TERAZ 💧 </button>
+                    <button @click="waterPlant(plant.id)" class="w-full py-5 bg-green-600 text-white font-black rounded-2xl hover:bg-green-700 transition-all shadow-xl active:scale-95"> ZALÍT NYNÍ 💧 </button>
                 </div>
             </template>
         </div>
@@ -79,11 +80,10 @@
         <div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <div @click.away="showDeleteModal = false" class="bg-white rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl text-center">
                 <div class="text-5xl mb-4">🥺</div>
-                <h3 class="text-xl font-black text-gray-900 mb-2">Opravdu ji chceš odstranit?</h3>
-                <p class="text-gray-500 mb-8 text-sm">Tento krok nejde vzít zpět.</p>
-                <div class="flex flex-col gap-3">
-                    <button @click="showDeleteModal = false" class="w-full py-4 bg-gray-100 text-gray-800 font-bold rounded-2xl hover:bg-gray-200 transition-all">Ne, proboha! 🌿</button>
-                    <button @click="deletePlant()" class="w-full py-4 bg-red-100 text-red-600 font-bold rounded-2xl hover:bg-red-200 transition-all">Ano, již spinká (RIP) ⚰️</button>
+                <h3 class="text-xl font-black text-gray-900 mb-2">Odstranit rostlinu?</h3>
+                <div class="flex flex-col gap-3 mt-6">
+                    <button @click="showDeleteModal = false" class="w-full py-4 bg-gray-100 text-gray-800 font-bold rounded-2xl">Zrušit</button>
+                    <button @click="deletePlant()" class="w-full py-4 bg-red-100 text-red-600 font-bold rounded-2xl">Smazat</button>
                 </div>
             </div>
         </div>
@@ -103,47 +103,42 @@
                 
                 fullLibrary: [
                     { n: 'Aglaonema', s: 7, w: 14 },
-                    { n: 'Aloa pravá (Aloe Vera, Aloe)', s: 14, w: 21 },
-                    { n: 'Amaryllis (Amarylka / Hvězdník)', s: 5, w: 10 },
-                    { n: 'Azalka (Rhododendron)', s: 3, w: 6 },
-                    { n: 'Bromélie (Bromélia)', s: 7, w: 12 },
+                    { n: 'Aloa pravá (Aloe Vera)', s: 14, w: 21 },
+                    { n: 'Amaryllis', s: 5, w: 10 },
+                    { n: 'Azalka', s: 3, w: 6 },
+                    { n: 'Bromélie', s: 7, w: 12 },
                     { n: 'Calathea', s: 3, w: 7 },
                     { n: 'Dieffenbachia', s: 5, w: 10 },
                     { n: 'Dracena', s: 7, w: 14 },
+                    { n: 'Fialka (Africká)', s: 4, w: 8 },
+                    { n: 'Fíkus lyrata', s: 5, w: 10 },
                     { n: 'Hyacint', s: 4, w: 9 },
-                    { n: 'Kaktus', s: 14, w: 30 },
-                    { n: 'Levandule (Levanduľa, Lavender)', s: 4, w: 10 },
+                    { n: 'Kaktus / Sukulent', s: 14, w: 30 },
+                    { n: 'Levandule', s: 4, w: 10 },
+                    { n: 'Lopatkovec', s: 3, w: 7 },
+                    { n: 'Modřenec', s: 4, w: 8 },
                     { n: 'Monstera', s: 7, w: 14 },
                     { n: 'Narcis', s: 4, w: 8 },
-                    { n: 'Orchidej (orchidea, Phalaenopsis', s: 7, w: 10 },
+                    { n: 'Orchidej', s: 7, w: 10 },
                     { n: 'Růže (Ruža)', s: 3, w: 7 },
-                    { n: 'Vánoční hvězda (Euphorbia / Poinsettia / Pryšec)', s: 5, w: 10 },
+                    { n: 'Sansevieria', s: 14, w: 30 },
                     { n: 'Tulipán', s: 3, w: 7 },
-                    { n: 'Vřes / Vřesovec (Vres)', s: 2, w: 5 },
-                    { n: 'Zamiokulkas (Zamio)', s: 14, w: 25 },
-                    { n: 'Zvonek (Campanula, Zvonček)', s: 3, w: 7 }
+                    { n: 'Vánoční hvězda (Euphorbia)', s: 5, w: 10 },
+                    { n: 'Vánoční kaktus', s: 7, w: 12 },
+                    { n: 'Vřes / Vřesovec', s: 2, w: 5 },
+                    { n: 'Zamiokulkas', s: 14, w: 25 },
+                    { n: 'Zelenec', s: 4, w: 10 },
+                    { n: 'Zvonek (Campanula)', s: 3, w: 7 }
                 ],
-                sendNotification(plantName) {
-    if (Notification.permission === "granted") {
-        navigator.serviceWorker.ready.then(registration => {
-            registration.showNotification("Žíznivá kytka! 💧", {
-                body: `${plantName} potřebuje zalít.`,
-                icon: "icon-192.png", // cesta k tvojí ikoně
-                vibrate: [200, 100, 200]
-            });
-        });
-    }
-}
 
                 getIcon(name) {
                     const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                    if (n.includes('kaktus') || n.includes('aloa')) return '🌵';
-                    if (n.includes('hvezda') || n.includes('hviezda') || n.includes('euphorbia') || n.includes('poinsettia')) return '✨';
-                    if (n.includes('azal') || n.includes('lalia') || n.includes('narcis') || n.includes('zvonek') || n.includes('vres')) return '🌸';
+                    if (n.includes('kaktus') || n.includes('aloa') || n.includes('sukulent')) return '🌵';
+                    if (n.includes('ruze') || n.includes('azal') || n.includes('lilie') || n.includes('tulipan') || n.includes('narcis') || n.includes('modrenec') || n.includes('zvonek') || n.includes('vres')) return '🌸';
                     if (n.includes('hyacint') || n.includes('levandul')) return '🪻';
-                    if (n.includes('tulipan') ) return '🌷';
-                    if (n.includes('ruze') ) return '🌹';
-                    if (n.includes('palma') || n.includes('dracena')) return '🌴';
+                    if (n.includes('palma') || n.includes('dracena') || n.includes('monstera') || n.includes('fikus')) return '🌴';
+                    if (n.includes('hvezda') || n.includes('euphorbia')) return '✨';
+                    if (n.includes('bylink') || n.includes('mata')) return '🌿';
                     return '🪴';
                 },
 
@@ -152,23 +147,27 @@
                     const savedSeason = localStorage.getItem('vibeJungleSeasonPro');
                     if (saved) this.plants = JSON.parse(saved);
                     if (savedSeason) this.season = savedSeason;
+
+                    // Žádost o notifikace
+                    if ("Notification" in window && Notification.permission !== "granted") {
+                        Notification.requestPermission();
+                    }
+
+                    // Registrace SW
+                    if ("serviceWorker" in navigator) {
+                        navigator.serviceWorker.register("sw.js").catch(err => console.log("SW error", err));
+                    }
+
                     this.$watch('plants', v => localStorage.setItem('vibeJunglePro', JSON.stringify(v)));
                     setInterval(() => this.recalculateAll(), 60000);
-                    // ... tvůj stávající kód (načítání z localStorage) ...
+                },
 
-    // Žádost o povolení notifikací
-    if ("Notification" in window) {
-        Notification.requestPermission();
-    }
-
-    // Registrace Service Workeru (pokud ho tam ještě nemáš registrovaný)
-    if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("sw.js");
-    }
-
-    this.$watch('plants', v => localStorage.setItem('vibeJunglePro', JSON.stringify(v)));
-    setInterval(() => this.recalculateAll(), 60000);
-}
+                sendNotify(title, body) {
+                    if (Notification.permission === "granted" && "serviceWorker" in navigator) {
+                        navigator.serviceWorker.ready.then(reg => {
+                            reg.showNotification(title, { body, icon: 'icon-192.png', vibrate: [200, 100, 200] });
+                        });
+                    }
                 },
 
                 checkLibrary() {
@@ -213,7 +212,12 @@
                     this.plants.forEach(p => {
                         const maxDays = this.season === 'summer' ? p.summerDays : p.winterDays;
                         const daysElapsed = Math.floor((now - p.lastWateredMs) / 86400000);
+                        const oldDays = p.daysLeft;
                         p.daysLeft = Math.max(0, maxDays - daysElapsed);
+                        
+                        if (p.daysLeft === 0 && oldDays > 0) {
+                            this.sendNotify("Žíznivá kytka! 💧", `${p.name} potřebuje zalít.`);
+                        }
                     });
                 },
 
@@ -227,8 +231,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
