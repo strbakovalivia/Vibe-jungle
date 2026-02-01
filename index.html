@@ -107,25 +107,26 @@
                 showDeleteModal: false,
                 plantToDelete: null,
                 
-                // ROZŠÍŘENÁ DATABÁZE (CS, SK, LAT)
                 fullLibrary: [
-                    { n: 'Monstera deliciosa', s: 7, w: 14 },
+                    { n: 'Aloa pravá (Aloe Vera)', s: 14, w: 21 },
+                    { n: 'Bromélie (Bromélia)', s: 7, w: 12 },
+                    { n: 'Calathea (Kalatea)', s: 3, w: 7 },
+                    { n: 'Caryota (Pajasan)', s: 5, w: 10 },
+                    { n: 'Dieffenbachia (Difenbachia)', s: 5, w: 10 },
+                    { n: 'Dracéna (Dracaena)', s: 7, w: 14 },
+                    { n: 'Echevérie (Echevéria)', s: 10, w: 20 },
+                    { n: 'Fialka (Africká)', s: 4, w: 8 },
                     { n: 'Fíkus lyrata', s: 5, w: 10 },
                     { n: 'Fikus kaučukový', s: 6, w: 12 },
-                    { n: 'Orchidej (Orchidea)', s: 7, w: 10 },
-                    { n: 'Phalaenopsis', s: 7, w: 10 },
+                    { n: 'Kaktus (Kaktusy)', s: 14, w: 30 },
                     { n: 'Lopatkovec (Spathiphyllum)', s: 3, w: 7 },
-                    { n: 'Tchynin jazyk', s: 14, w: 30 },
-                    { n: 'Svokrin jazyk', s: 14, w: 30 },
-                    { n: 'Sansevieria', s: 14, w: 30 },
-                    { n: 'Dracéna (Dracaena)', s: 7, w: 14 },
+                    { n: 'Monstera deliciosa', s: 7, w: 14 },
+                    { n: 'Orchidej (Orchidea)', s: 7, w: 10 },
                     { n: 'Potosovec (Epipremnum)', s: 5, w: 12 },
-                    { n: 'Aloa pravá (Aloe Vera)', s: 14, w: 21 },
-                    { n: 'Vánoční kaktus', s: 7, w: 12 },
-                    { n: 'Vianočný kaktus', s: 7, w: 12 },
-                    { n: 'Schlumbergera', s: 7, w: 12 },
-                    { n: 'Zamiokulkas (Zamioculcas)', s: 14, w: 25 },
-                    { n: 'Africká fialka', s: 4, w: 8 },
+                    { n: 'Rhipsalis', s: 10, w: 20 },
+                    { n: 'Sansevieria (Svokrin jazyk)', s: 14, w: 30 },
+                    { n: 'Schlumbergera (Vianočný kaktus)', s: 7, w: 12 },
+                    { n: 'Zamiokulkas', s: 14, w: 25 },
                     { n: 'Zelenec (Chlorophytum)', s: 4, w: 10 }
                 ],
 
@@ -143,7 +144,7 @@
                     const match = this.fullLibrary.find(item => 
                         item.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(input)
                     );
-                    if (match && input.length > 2) {
+                    if (match && input.length >= 3) {
                         this.summerDays = match.s;
                         this.winterDays = match.w;
                     }
