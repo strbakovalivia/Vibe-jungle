@@ -89,7 +89,7 @@
                 <p class="text-gray-500 mb-8 text-sm">Tento krok nejde vzít zpět.</p>
                 <div class="flex flex-col gap-3">
                     <button @click="showDeleteModal = false" class="w-full py-4 bg-gray-100 text-gray-800 font-bold rounded-2xl hover:bg-gray-200 transition-all">Ne, proboha! 🌿</button>
-                    <button @click="deletePlant()" class="w-full py-4 bg-red-100 text-red-600 font-bold rounded-2xl hover:bg-red-200 transition-all">Ano, již spinkám (RIP) ⚰️</button>
+                    <button @click="deletePlant()" class="w-full py-4 bg-red-100 text-red-600 font-bold rounded-2xl hover:bg-red-200 transition-all">Ano, již spinká (RIP) ⚰️</button>
                 </div>
             </div>
         </div>
@@ -108,24 +108,33 @@
                 plantToDelete: null,
                 
                 fullLibrary: [
+                    { n: 'Aglaonema (Aglaonéma)', s: 7, w: 14 },
                     { n: 'Aloa pravá (Aloe Vera)', s: 14, w: 21 },
+                    { n: 'Azalka (Rhododendron)', s: 3, w: 6 },
                     { n: 'Bromélie (Bromélia)', s: 7, w: 12 },
                     { n: 'Calathea (Kalatea)', s: 3, w: 7 },
-                    { n: 'Caryota (Pajasan)', s: 5, w: 10 },
+                    { n: 'Caryota (Pajasan / Rybia palma)', s: 5, w: 10 },
                     { n: 'Dieffenbachia (Difenbachia)', s: 5, w: 10 },
-                    { n: 'Dracéna (Dracaena)', s: 7, w: 14 },
-                    { n: 'Echevérie (Echevéria)', s: 10, w: 20 },
+                    { n: 'Divný Janko (Epipremnum / Potos)', s: 5, w: 12 },
+                    { n: 'Dracéna (Dracena / Dracaena)', s: 7, w: 14 },
+                    { n: 'Echevérie (Echevéria / Skalná ruža)', s: 10, w: 20 },
+                    { n: 'Euphorbia (Vánoční hvězda / Vianočná hviezda)', s: 5, w: 10 },
                     { n: 'Fialka (Africká)', s: 4, w: 8 },
+                    { n: 'Fittonia (Fitónia)', s: 3, w: 6 },
                     { n: 'Fíkus lyrata', s: 5, w: 10 },
                     { n: 'Fikus kaučukový', s: 6, w: 12 },
                     { n: 'Kaktus (Kaktusy)', s: 14, w: 30 },
+                    { n: 'Kalanchoe (Kolopejka / Kalanchoa)', s: 10, w: 18 },
+                    { n: 'Kávovník (Coffea)', s: 4, w: 9 },
+                    { n: 'Lilie (Ľalia)', s: 4, w: 8 },
                     { n: 'Lopatkovec (Spathiphyllum)', s: 3, w: 7 },
                     { n: 'Monstera deliciosa', s: 7, w: 14 },
-                    { n: 'Orchidej (Orchidea)', s: 7, w: 10 },
-                    { n: 'Potosovec (Epipremnum)', s: 5, w: 12 },
+                    { n: 'Orchidej (Orchidea / Phalaenopsis)', s: 7, w: 10 },
                     { n: 'Rhipsalis', s: 10, w: 20 },
-                    { n: 'Sansevieria (Svokrin jazyk)', s: 14, w: 30 },
-                    { n: 'Schlumbergera (Vianočný kaktus)', s: 7, w: 12 },
+                    { n: 'Sansevieria (Svokrin jazyk / Tchynin jazyk)', s: 14, w: 30 },
+                    { n: 'Schlumbergera (Vánoční kaktus / Vianočný kaktus)', s: 7, w: 12 },
+                    { n: 'Senecio (Starček)', s: 10, w: 20 },
+                    { n: 'Strelitzia (Strelícia)', s: 6, w: 12 },
                     { n: 'Zamiokulkas', s: 14, w: 25 },
                     { n: 'Zelenec (Chlorophytum)', s: 4, w: 10 }
                 ],
@@ -207,4 +216,3 @@
     </script>
 </body>
 </html>
-
