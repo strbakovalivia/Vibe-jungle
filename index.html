@@ -49,10 +49,9 @@
                     <input x-model="lastWateredDate" type="date" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 font-bold text-gray-700 focus:ring-2 focus:ring-green-500 outline-none">
                 </div>
             </div>
-            <button @click="addPlant()" class="w-full mt-6 bg-green-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl active:scale-[0.98]">
-                this.sendNotify("Test!", "Právě jsi přidala kytku!");
-                Přidat do sbírky +
-            </button>
+            <button @click="addPlant(); sendNotify('Test!', 'Právě jsi přidala kytku!')" class="w-full mt-6 bg-green-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl active:scale-[0.98]">
+    Přidat do sbírky +
+</button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -166,22 +165,13 @@
                 sendNotify(title, body) {
                     if (Notification.permission === "granted" && "serviceWorker" in navigator) {
                         navigator.serviceWorker.ready.then(reg => {
-                            reg.showNotification(title, { body, icon: 'icon-192.png', vibrate: [200, 100, 200] });
+                            reg.showNotification(title, { 
+                                body: body,
+                                vibrate: [200, 100, 200] 
+                            });
                         });
                     }
                 },
-                
-                sendNotify(title, body) {
-    if (Notification.permission === "granted" && "serviceWorker" in navigator) {
-        navigator.serviceWorker.ready.then(reg => {
-            reg.showNotification(title, { 
-                body: body,
-                // Smazali jsme řádek s ikonou, aby to neházelo chybu
-                vibrate: [200, 100, 200] 
-            });
-        });
-    }
-}
 
                 checkLibrary() {
                     const input = this.newName.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -244,5 +234,6 @@
     </script>
 </body>
 </html>
+
 
 
