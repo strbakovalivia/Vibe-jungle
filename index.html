@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#064e3b">
-    
     <link rel="manifest" href="manifest.json">
-    
     <title>Plant Vibe Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -18,57 +16,68 @@
         <div class="flex flex-col md:flex-row justify-between items-center mb-10 bg-white p-6 rounded-[2.5rem] shadow-sm border border-green-100 gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-green-900">Moje Džungle 🌿</h1>
-                <p class="text-green-600 text-sm font-medium" x-text="season === 'summer' ? 'Letní režim (častější zálivka)' : 'Zimní režim (klidový stav)'"></p>
+                <p class="text-green-600 text-sm font-medium" x-text="season === 'summer' ? 'Letní režim ☀️' : 'Zimní režim ❄️'"></p>
             </div>
             
             <div class="flex items-center gap-4">
-                <button @click="requestNotify" class="text-xs font-bold text-gray-400 border border-gray-100 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors">🔔 Notifikace</button>
                 <div class="flex bg-gray-100 p-1 rounded-2xl">
-                    <button @click="setSeason('summer')" :class="season === 'summer' ? 'bg-white shadow-sm text-orange-500' : 'text-gray-400'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">Léto ☀️</button>
-                    <button @click="setSeason('winter')" :class="season === 'winter' ? 'bg-white shadow-sm text-blue-500' : 'text-gray-400'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">Zima ❄️</button>
+                    <button @click="setSeason('summer')" :class="season === 'summer' ? 'bg-white shadow-sm text-orange-500' : 'text-gray-400'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">Léto</button>
+                    <button @click="setSeason('winter')" :class="season === 'winter' ? 'bg-white shadow-sm text-blue-500' : 'text-gray-400'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">Zima</button>
                 </div>
             </div>
         </div>
 
         <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-green-100 mb-10">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="md:col-span-1">
-                    <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Název rostliny</label>
-                    <input x-model="newName" type="text" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-green-500 outline-none">
+            <h3 class="text-sm font-bold text-gray-400 uppercase mb-4 tracking-widest text-center">Nová rostlina</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Název / Druh</label>
+                    <input x-model="newName" @input="checkLibrary()" type="text" placeholder="Zkus 'Monstera'..." class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-green-500 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Léto (dny)</label>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Léto (dny)</label>
                     <input x-model="summerDays" type="number" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 text-orange-600 font-bold focus:ring-2 focus:ring-orange-400 outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Zima (dny)</label>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Zima (dny)</label>
                     <input x-model="winterDays" type="number" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 text-blue-600 font-bold focus:ring-2 focus:ring-blue-400 outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Kdy byla zalitá?</label>
+                    <select x-model="lastWateredOffset" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 font-bold text-gray-700 focus:ring-2 focus:ring-green-500 outline-none appearance-none">
+                        <option value="0">Dnes</option>
+                        <option value="1">Včera</option>
+                        <option value="2">Před 2 dny</option>
+                        <option value="3">Před 3 dny</option>
+                        <option value="7">Před týdnem</option>
+                        <option value="14">Před 2 týdny</option>
+                    </select>
                 </div>
             </div>
             <button @click="addPlant()" class="w-full mt-6 bg-green-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl active:scale-[0.98]">
-                Přidat do aplikace +
+                Přidat do sbírky +
             </button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <template x-for="plant in plants" :key="plant.id">
-                <div class="bg-white rounded-[3rem] p-8 shadow-sm border border-green-50 relative group transition-all duration-500" :class="plant.daysLeft <= 0 ? 'bg-red-50 border-red-200' : ''">
-                    <button @click="removePlant(plant.id)" class="absolute top-8 right-8 text-gray-300 hover:text-red-500">✕</button>
+                <div class="bg-white rounded-[3rem] p-8 shadow-sm border border-green-50 relative transition-all duration-500" :class="plant.daysLeft <= 0 ? 'bg-red-50 border-red-100' : ''">
+                    <button @click="confirmRemove(plant.id)" class="absolute top-8 right-8 text-gray-300 hover:text-red-500 transition-colors">✕</button>
                     
                     <div class="text-6xl mb-6 bg-gray-50 w-24 h-24 flex items-center justify-center rounded-[2rem]" x-text="plant.daysLeft <= 0 ? '🥀' : '🪴'"></div>
                     
                     <h2 class="text-2xl font-black text-gray-900 mb-1" x-text="plant.name"></h2>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6" x-text="'Poslední zálivka: ' + (plant.lastWatered || 'Zatím nebyla')"></p>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Poslední: <span class="text-gray-600" x-text="plant.lastWatered"></span></p>
                     
                     <div class="space-y-4 mb-8">
                         <div class="flex justify-between items-end">
                             <div>
                                 <span class="text-4xl font-black" :class="plant.daysLeft <= 0 ? 'text-red-600' : 'text-green-900'" x-text="plant.daysLeft"></span>
-                                <span class="text-sm font-bold text-gray-400 uppercase">dní zbývá</span>
+                                <span class="text-sm font-bold text-gray-400 uppercase">dní</span>
                             </div>
                             <div class="text-right">
-                                <span class="text-[10px] font-black text-gray-300 uppercase block tracking-widest">Cíl</span>
-                                <span class="font-bold text-gray-500" x-text="(season === 'summer' ? plant.summerDays : plant.winterDays) + ' dní'"></span>
+                                <span class="text-[10px] font-black text-gray-300 uppercase block">Plán</span>
+                                <span class="font-bold text-gray-500" x-text="(season === 'summer' ? plant.summerDays : plant.winterDays) + 'd'"></span>
                             </div>
                         </div>
                         <div class="w-full bg-gray-100 h-4 rounded-full overflow-hidden p-1">
@@ -79,7 +88,7 @@
                         </div>
                     </div>
 
-                    <button @click="waterPlant(plant.id)" class="w-full py-5 bg-green-600 text-white font-black rounded-[1.5rem] hover:bg-green-700 transition-all shadow-xl shadow-green-100 flex items-center justify-center gap-3 active:scale-95">
+                    <button @click="waterPlant(plant.id)" class="w-full py-5 bg-green-600 text-white font-black rounded-2xl hover:bg-green-700 transition-all shadow-xl shadow-green-100 flex items-center justify-center gap-3 active:scale-95">
                         ZALÍT TERAZ 💧
                     </button>
                 </div>
@@ -94,7 +103,19 @@
                 newName: '',
                 summerDays: 7,
                 winterDays: 14,
+                lastWateredOffset: 0,
                 season: 'summer',
+                // KNIHOVNA ROSTLIN
+                library: {
+                    'monstera': { s: 7, w: 14 },
+                    'fikus': { s: 5, w: 10 },
+                    'lopatkovec': { s: 3, w: 7 },
+                    'svokra': { s: 14, w: 30 },
+                    'dracena': { s: 7, w: 14 },
+                    'potosovec': { s: 5, w: 12 },
+                    'aloa': { s: 14, w: 21 },
+                    'orchidea': { s: 7, w: 10 }
+                },
 
                 init() {
                     const saved = localStorage.getItem('vibeJunglePro');
@@ -105,87 +126,71 @@
                     this.$watch('plants', v => localStorage.setItem('vibeJunglePro', JSON.stringify(v)));
                     this.$watch('season', v => localStorage.setItem('vibeJungleSeasonPro', v));
 
-                    // INTERVAL KONTROLY (každou minutu zkontroluje, jestli už uběhl den)
-                    setInterval(() => {
-                        const now = new Date().getTime();
-                        this.plants.forEach(p => {
-                            if (!p.lastWateredMs) return;
-                            
-                            // Výpočet: Kolik dní uběhlo od posledního zalití?
-                            const msInDay = 86400000; // ZMĚŇ NA 10000 pro testování (1 den = 10s)
-                            const maxDays = this.season === 'summer' ? p.summerDays : p.winterDays;
-                            const msElapsed = now - p.lastWateredMs;
-                            const daysElapsed = Math.floor(msElapsed / msInDay);
-                            
-                            const newDaysLeft = Math.max(0, maxDays - daysElapsed);
-                            
-                            if (p.daysLeft !== newDaysLeft) {
-                                p.daysLeft = newDaysLeft;
-                                if (p.daysLeft === 0) this.sendNotification(p.name);
-                            }
-                        });
-                    }, 1000); // Kontrola každou sekundu
+                    setInterval(() => this.recalculateAll(), 60000); // Každou minutu přepočítat
+                },
+
+                checkLibrary() {
+                    const find = this.newName.toLowerCase().trim();
+                    if (this.library[find]) {
+                        this.summerDays = this.library[find].s;
+                        this.winterDays = this.library[find].w;
+                    }
                 },
 
                 addPlant() {
                     if (!this.newName) return;
+                    
                     const now = new Date();
+                    // Nastavení času do minulosti podle výběru uživatele
+                    const wateredAt = new Date(now.getTime() - (this.lastWateredOffset * 86400000));
+                    
+                    const maxDays = this.season === 'summer' ? this.summerDays : this.winterDays;
+                    const daysLeft = Math.max(0, maxDays - this.lastWateredOffset);
+
                     this.plants.push({
                         id: Date.now(),
                         name: this.newName,
                         summerDays: parseInt(this.summerDays),
                         winterDays: parseInt(this.winterDays),
-                        daysLeft: this.season === 'summer' ? parseInt(this.summerDays) : parseInt(this.winterDays),
-                        lastWatered: now.toLocaleString('cs-CZ'),
-                        lastWateredMs: now.getTime()
+                        daysLeft: daysLeft,
+                        lastWatered: wateredAt.toLocaleDateString('cs-CZ'),
+                        lastWateredMs: wateredAt.getTime()
                     });
+
                     this.newName = '';
+                    this.lastWateredOffset = 0;
                 },
 
                 waterPlant(id) {
                     const now = new Date();
                     let p = this.plants.find(p => p.id === id);
-                    p.lastWatered = now.toLocaleString('cs-CZ');
+                    p.lastWatered = now.toLocaleDateString('cs-CZ');
                     p.lastWateredMs = now.getTime();
                     p.daysLeft = this.season === 'summer' ? p.summerDays : p.winterDays;
                 },
 
-                setSeason(s) {
-                    this.season = s;
-                    // Přepočet všech kytek hned po změně sezóny
+                recalculateAll() {
+                    const now = new Date().getTime();
+                    const msInDay = 86400000;
                     this.plants.forEach(p => {
                         const maxDays = this.season === 'summer' ? p.summerDays : p.winterDays;
-                        const msInDay = 86400000; // ZMĚŇ NA 10000 pro testování
-                        const daysElapsed = Math.floor((new Date().getTime() - p.lastWateredMs) / msInDay);
+                        const daysElapsed = Math.floor((now - p.lastWateredMs) / msInDay);
                         p.daysLeft = Math.max(0, maxDays - daysElapsed);
                     });
                 },
 
-                removePlant(id) {
-                    this.plants = this.plants.filter(p => p.id !== id);
+                setSeason(s) {
+                    this.season = s;
+                    this.recalculateAll();
                 },
 
-                requestNotify() {
-                    Notification.requestPermission();
-                },
-
-                sendNotification(name) {
-                    if (Notification.permission === 'granted') {
-                        new Notification('Žízeň! 🌵', { body: `${name} chce zalít!` });
+                confirmRemove(id) {
+                    if (confirm('Opravdu chceš tuto rostlinu smazat?')) {
+                        this.plants = this.plants.filter(p => p.id !== id);
                     }
                 }
             }
         }
     </script>
-    <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
 </body>
-
 </html>
-
-
-
-
