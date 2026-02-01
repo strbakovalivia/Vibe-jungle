@@ -59,18 +59,18 @@
             <template x-for="plant in plants" :key="plant.id">
                 <div class="bg-white rounded-[3rem] p-8 shadow-sm border border-green-50 relative transition-all duration-500" :class="plant.daysLeft <= 0 ? 'bg-red-50 border-red-100' : ''">
                     <button @click="triggerDelete(plant.id)" class="absolute top-8 right-8 text-gray-300 hover:text-red-500 transition-colors">✕</button>
-                    <div class="text-6xl mb-6 bg-gray-50 w-24 h-24 flex items-center justify-center rounded-[2rem]" x-text="plant.daysLeft <= 0 ? '🥀' : '🪴'"></div>
+                    
+                    <div class="text-6xl mb-6 bg-gray-50 w-24 h-24 flex items-center justify-center rounded-[2rem]" 
+                         x-text="plant.daysLeft <= 0 ? '🥀' : getIcon(plant.name)"></div>
+                    
                     <h2 class="text-2xl font-black text-gray-900 mb-1" x-text="plant.name"></h2>
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Naposledy: <span class="text-gray-600" x-text="plant.lastWatered"></span></p>
+                    
                     <div class="space-y-4 mb-8">
                         <div class="flex justify-between items-end">
                             <div>
                                 <span class="text-4xl font-black" :class="plant.daysLeft <= 0 ? 'text-red-600' : 'text-green-900'" x-text="plant.daysLeft"></span>
                                 <span class="text-sm font-bold text-gray-400 uppercase">dní</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-[10px] font-black text-gray-300 uppercase block">Plán</span>
-                                <span class="font-bold text-gray-500" x-text="(season === 'summer' ? plant.summerDays : plant.winterDays) + 'd'"></span>
                             </div>
                         </div>
                         <div class="w-full bg-gray-100 h-4 rounded-full overflow-hidden p-1">
@@ -110,34 +110,43 @@
                 fullLibrary: [
                     { n: 'Aglaonema (Aglaonéma)', s: 7, w: 14 },
                     { n: 'Aloa pravá (Aloe Vera)', s: 14, w: 21 },
-                    { n: 'Azalka (Rhododendron)', s: 3, w: 6 },
+                    { n: 'Azalka (Rhododendron / Rododendron)', s: 3, w: 6 },
                     { n: 'Bromélie (Bromélia)', s: 7, w: 12 },
-                    { n: 'Calathea (Kalatea)', s: 3, w: 7 },
-                    { n: 'Caryota (Pajasan / Rybia palma)', s: 5, w: 10 },
+                    { n: 'Calathea (Kalatea / Modlivka)', s: 3, w: 7 },
+                    { n: 'Caryota (Rybia palma)', s: 5, w: 10 },
                     { n: 'Dieffenbachia (Difenbachia)', s: 5, w: 10 },
                     { n: 'Divný Janko (Epipremnum / Potos)', s: 5, w: 12 },
-                    { n: 'Dracéna (Dracena / Dracaena)', s: 7, w: 14 },
-                    { n: 'Echevérie (Echevéria / Skalná ruža)', s: 10, w: 20 },
-                    { n: 'Euphorbia (Vánoční hvězda / Vianočná hviezda / Pryšec)', s: 5, w: 10 },
+                    { n: 'Dracena (Dracéna)', s: 7, w: 14 },
+                    { n: 'Echevérie (Skalná ruža)', s: 10, w: 20 },
                     { n: 'Fialka (Africká)', s: 4, w: 8 },
                     { n: 'Fittonia (Fitónia)', s: 3, w: 6 },
                     { n: 'Fíkus lyrata', s: 5, w: 10 },
-                    { n: 'Fikus kaučukový', s: 6, w: 12 },
-                    { n: 'Kaktus (Kaktusy)', s: 14, w: 30 },
-                    { n: 'Kalanchoe (Kolopejka / Kalanchoa)', s: 10, w: 18 },
+                    { n: 'Kaktus (Sukulenty)', s: 14, w: 30 },
+                    { n: 'Kalanchoe (Kolopejka)', s: 10, w: 18 },
                     { n: 'Kávovník (Coffea)', s: 4, w: 9 },
                     { n: 'Lilie (Ľalia)', s: 4, w: 8 },
-                    { n: 'Lopatkovec (Spathiphyllum / Toulcovka)', s: 3, w: 7 },
+                    { n: 'Lopatkovec', s: 3, w: 7 },
                     { n: 'Monstera deliciosa', s: 7, w: 14 },
-                    { n: 'Orchidej (Orchidea / Phalaenopsis)', s: 7, w: 10 },
-                    { n: 'Rhipsalis', s: 10, w: 20 },
-                    { n: 'Sansevieria (Svokrin jazyk / Tchynin jazyk)', s: 14, w: 30 },
-                    { n: 'Schlumbergera (Vánoční kaktus / Vianočný kaktus)', s: 7, w: 12 },
+                    { n: 'Orchidej (Phalaenopsis)', s: 7, w: 10 },
+                    { n: 'Růže (Ruža)', s: 3, w: 7 },
+                    { n: 'Sansevieria (Svokrin jazyk)', s: 14, w: 30 },
                     { n: 'Senecio (Starček)', s: 10, w: 20 },
-                    { n: 'Strelitzia (Strelícia / Strelície)', s: 6, w: 12 },
-                    { n: 'Zamiokulkas (Zamio)', s: 14, w: 25 },
-                    { n: 'Zelenec (Chlorophytum)', s: 4, w: 10 }
+                    { n: 'Strelitzia (Strelícia)', s: 6, w: 12 },
+                    { n: 'Vánoční hvězda (Vianočná hviezda)', s: 5, w: 10 },
+                    { n: 'Vánoční kaktus (Vianočný kaktus)', s: 7, w: 12 },
+                    { n: 'Zamiokulkas', s: 14, w: 25 },
+                    { n: 'Zelenec', s: 4, w: 10 }
                 ],
+
+                getIcon(name) {
+                    const n = name.toLowerCase();
+                    if (n.includes('kaktus') || n.includes('echeve') || n.includes('ruza') || n.includes('aloa')) return '🌵';
+                    if (n.includes('ruze') || n.includes('ruza') || n.includes('azal') || n.includes('lilie') || n.includes('lalia') || n.includes('fialka')) return '🌸';
+                    if (n.includes('palma') || n.includes('caryota') || n.includes('juka') || n.includes('yucca')) return '🌴';
+                    if (n.includes('hvezda') || n.includes('hviezda')) return '✨';
+                    if (n.includes('strom') || n.includes('fikus') || n.includes('citron')) return '🌳';
+                    return '🌿';
+                },
 
                 init() {
                     const saved = localStorage.getItem('vibeJunglePro');
@@ -150,13 +159,9 @@
 
                 checkLibrary() {
                     const input = this.newName.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                    const match = this.fullLibrary.find(item => 
-                        item.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(input)
-                    );
-                    if (match && input.length >= 3) {
-                        this.summerDays = match.s;
-                        this.winterDays = match.w;
-                    }
+                    if (input.length < 2) return;
+                    const match = this.fullLibrary.find(item => item.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(input));
+                    if (match) { this.summerDays = match.s; this.winterDays = match.w; }
                 },
 
                 addPlant() {
@@ -165,7 +170,6 @@
                     const now = new Date();
                     const diffDays = Math.floor(Math.abs(now - selectedDate) / 86400000);
                     const maxDays = this.season === 'summer' ? this.summerDays : this.winterDays;
-                    
                     this.plants.push({
                         id: Date.now(),
                         name: this.newName,
@@ -187,15 +191,8 @@
                     p.daysLeft = this.season === 'summer' ? p.summerDays : p.winterDays;
                 },
 
-                triggerDelete(id) {
-                    this.plantToDelete = id;
-                    this.showDeleteModal = true;
-                },
-
-                deletePlant() {
-                    this.plants = this.plants.filter(p => p.id !== this.plantToDelete);
-                    this.showDeleteModal = false;
-                },
+                triggerDelete(id) { this.plantToDelete = id; this.showDeleteModal = true; },
+                deletePlant() { this.plants = this.plants.filter(p => p.id !== this.plantToDelete); this.showDeleteModal = false; },
 
                 recalculateAll() {
                     const now = new Date().getTime();
@@ -216,4 +213,3 @@
     </script>
 </body>
 </html>
-
