@@ -123,6 +123,17 @@
                     { n: 'Zamiokulkas (Zamio)', s: 14, w: 25 },
                     { n: 'Zvonek (Campanula, Zvonček)', s: 3, w: 7 }
                 ],
+                sendNotification(plantName) {
+    if (Notification.permission === "granted") {
+        navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification("Žíznivá kytka! 💧", {
+                body: `${plantName} potřebuje zalít.`,
+                icon: "icon-192.png", // cesta k tvojí ikoně
+                vibrate: [200, 100, 200]
+            });
+        });
+    }
+}
 
                 getIcon(name) {
                     const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -143,6 +154,21 @@
                     if (savedSeason) this.season = savedSeason;
                     this.$watch('plants', v => localStorage.setItem('vibeJunglePro', JSON.stringify(v)));
                     setInterval(() => this.recalculateAll(), 60000);
+                    // ... tvůj stávající kód (načítání z localStorage) ...
+
+    // Žádost o povolení notifikací
+    if ("Notification" in window) {
+        Notification.requestPermission();
+    }
+
+    // Registrace Service Workeru (pokud ho tam ještě nemáš registrovaný)
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js");
+    }
+
+    this.$watch('plants', v => localStorage.setItem('vibeJunglePro', JSON.stringify(v)));
+    setInterval(() => this.recalculateAll(), 60000);
+}
                 },
 
                 checkLibrary() {
@@ -201,6 +227,7 @@
     </script>
 </body>
 </html>
+
 
 
 
