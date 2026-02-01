@@ -169,6 +169,18 @@
                         });
                     }
                 },
+                
+                sendNotify(title, body) {
+    if (Notification.permission === "granted" && "serviceWorker" in navigator) {
+        navigator.serviceWorker.ready.then(reg => {
+            reg.showNotification(title, { 
+                body: body,
+                // Smazali jsme řádek s ikonou, aby to neházelo chybu
+                vibrate: [200, 100, 200] 
+            });
+        });
+    }
+}
 
                 checkLibrary() {
                     const input = this.newName.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -231,3 +243,4 @@
     </script>
 </body>
 </html>
+
