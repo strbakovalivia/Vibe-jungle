@@ -1,215 +1,124 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#064e3b">
-    <link rel="manifest" href="manifest.json">
-    <title>Plant Vibe Pro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <style> [x-cloak] { display: none !important; } </style>
-</head>
-<body class="bg-[#f8faf8] p-4 md:p-8 font-['Plus_Jakarta_Sans']" x-data="plantApp()">
+<script>
+    function plantApp() {
+        return {
+            plants: [],
+            newName: '',
+            summerDays: 7,
+            winterDays: 14,
+            lastWateredDate: new Date().toISOString().split('T')[0],
+            season: 'summer',
+            showDeleteModal: false,
+            plantToDelete: null,
+            
+            fullLibrary: [
+                { n: 'Aglaonema (Aglaonéma)', s: 7, w: 14 },
+                { n: 'Aloa pravá (Aloe Vera)', s: 14, w: 21 },
+                { n: 'Azalka (Rhododendron)', s: 3, w: 6 },
+                { n: 'Bromélie (Bromélia)', s: 7, w: 12 },
+                { n: 'Calathea (Kalatea)', s: 3, w: 7 },
+                { n: 'Caryota (Rybia palma)', s: 5, w: 10 },
+                { n: 'Dieffenbachia (Difenbachia)', s: 5, w: 10 },
+                { n: 'Divný Janko (Epipremnum)', s: 5, w: 12 },
+                { n: 'Dracena (Dracéna)', s: 7, w: 14 },
+                { n: 'Echevérie (Skalná ruža)', s: 10, w: 20 },
+                { n: 'Fialka (Africká)', s: 4, w: 8 },
+                { n: 'Fittonia (Fitónia)', s: 3, w: 6 },
+                { n: 'Fíkus lyrata', s: 5, w: 10 },
+                { n: 'Kaktus (Sukulenty)', s: 14, w: 30 },
+                { n: 'Kalanchoe (Kolopejka)', s: 10, w: 18 },
+                { n: 'Kávovník (Coffea)', s: 4, w: 9 },
+                { n: 'Lilie (Ľalia)', s: 4, w: 8 },
+                { n: 'Lopatkovec', s: 3, w: 7 },
+                { n: 'Monstera deliciosa', s: 7, w: 14 },
+                { n: 'Orchidej (Phalaenopsis)', s: 7, w: 10 },
+                { n: 'Růže (Ruža)', s: 3, w: 7 },
+                { n: 'Sansevieria (Svokrin jazyk)', s: 14, w: 30 },
+                { n: 'Senecio (Starček)', s: 10, w: 20 },
+                { n: 'Strelitzia (Strelícia)', s: 6, w: 12 },
+                { n: 'Vánoční hvězda (Vianočná hviezda)', s: 5, w: 10 },
+                { n: 'Vánoční kaktus (Vianočný kaktus)', s: 7, w: 12 },
+                { n: 'Zamiokulkas', s: 14, w: 25 },
+                { n: 'Zelenec', s: 4, w: 10 }
+            ],
 
-    <div class="max-w-4xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 bg-white p-6 rounded-[2.5rem] shadow-sm border border-green-100 gap-4">
-            <div>
-                <h1 class="text-3xl font-extrabold text-green-900">Moje Džungle 🌿</h1>
-                <p class="text-green-600 text-sm font-medium" x-text="season === 'summer' ? 'Letní režim ☀️' : 'Zimní režim ❄️'"></p>
-            </div>
-            <div class="flex bg-gray-100 p-1 rounded-2xl">
-                <button @click="setSeason('summer')" :class="season === 'summer' ? 'bg-white shadow-sm text-orange-500' : 'text-gray-400'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">Léto</button>
-                <button @click="setSeason('winter')" :class="season === 'winter' ? 'bg-white shadow-sm text-blue-500' : 'text-gray-400'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all">Zima</button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-green-100 mb-10">
-            <h3 class="text-sm font-bold text-gray-400 uppercase mb-4 tracking-widest text-center">Nová rostlina</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Název / Druh</label>
-                    <input x-model="newName" @input="checkLibrary()" list="plantSuggestions" type="text" placeholder="Hledej název..." class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-green-500 outline-none">
-                    <datalist id="plantSuggestions">
-                        <template x-for="item in fullLibrary" :key="item.n">
-                            <option :value="item.n"></option>
-                        </template>
-                    </datalist>
-                </div>
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Léto (dny)</label>
-                    <input x-model="summerDays" type="number" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 text-orange-600 font-bold focus:ring-2 focus:ring-orange-400 outline-none">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Zima (dny)</label>
-                    <input x-model="winterDays" type="number" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 text-blue-600 font-bold focus:ring-2 focus:ring-blue-400 outline-none">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Naposledy zalito</label>
-                    <input x-model="lastWateredDate" type="date" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 font-bold text-gray-700 focus:ring-2 focus:ring-green-500 outline-none">
-                </div>
-            </div>
-            <button @click="addPlant()" class="w-full mt-6 bg-green-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl active:scale-[0.98]">
-                Přidat do sbírky +
-            </button>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <template x-for="plant in plants" :key="plant.id">
-                <div class="bg-white rounded-[3rem] p-8 shadow-sm border border-green-50 relative transition-all duration-500" :class="plant.daysLeft <= 0 ? 'bg-red-50 border-red-100' : ''">
-                    <button @click="triggerDelete(plant.id)" class="absolute top-8 right-8 text-gray-300 hover:text-red-500 transition-colors">✕</button>
-                    
-                    <div class="text-6xl mb-6 bg-gray-50 w-24 h-24 flex items-center justify-center rounded-[2rem]" 
-                         x-text="plant.daysLeft <= 0 ? '🥀' : getIcon(plant.name)"></div>
-                    
-                    <h2 class="text-2xl font-black text-gray-900 mb-1" x-text="plant.name"></h2>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Naposledy: <span class="text-gray-600" x-text="plant.lastWatered"></span></p>
-                    
-                    <div class="space-y-4 mb-8">
-                        <div class="flex justify-between items-end">
-                            <div>
-                                <span class="text-4xl font-black" :class="plant.daysLeft <= 0 ? 'text-red-600' : 'text-green-900'" x-text="plant.daysLeft"></span>
-                                <span class="text-sm font-bold text-gray-400 uppercase">dní</span>
-                            </div>
-                        </div>
-                        <div class="w-full bg-gray-100 h-4 rounded-full overflow-hidden p-1">
-                            <div class="h-full rounded-full transition-all duration-1000" :class="plant.daysLeft <= 0 ? 'bg-red-500' : 'bg-green-500'" :style="`width: ${Math.max(0, (plant.daysLeft / (season === 'summer' ? plant.summerDays : plant.winterDays)) * 100)}%`" ></div>
-                        </div>
-                    </div>
-                    <button @click="waterPlant(plant.id)" class="w-full py-5 bg-green-600 text-white font-black rounded-2xl hover:bg-green-700 transition-all shadow-xl shadow-green-100 flex items-center justify-center gap-3 active:scale-95"> ZALÍT TERAZ 💧 </button>
-                </div>
-            </template>
-        </div>
-
-        <div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div @click.away="showDeleteModal = false" class="bg-white rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl text-center">
-                <div class="text-5xl mb-4">🥺</div>
-                <h3 class="text-xl font-black text-gray-900 mb-2">Opravdu ji chceš odstranit?</h3>
-                <p class="text-gray-500 mb-8 text-sm">Tento krok nejde vzít zpět.</p>
-                <div class="flex flex-col gap-3">
-                    <button @click="showDeleteModal = false" class="w-full py-4 bg-gray-100 text-gray-800 font-bold rounded-2xl hover:bg-gray-200 transition-all">Ne, proboha! 🌿</button>
-                    <button @click="deletePlant()" class="w-full py-4 bg-red-100 text-red-600 font-bold rounded-2xl hover:bg-red-200 transition-all">Ano, již spinká (RIP) ⚰️</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function plantApp() {
-            return {
-                plants: [],
-                newName: '',
-                summerDays: 7,
-                winterDays: 14,
-                lastWateredDate: new Date().toISOString().split('T')[0],
-                season: 'summer',
-                showDeleteModal: false,
-                plantToDelete: null,
+            // OPRAVENÁ LOGIKA IKONEK
+            getIcon(name) {
+                // Převede název na malá písmena a odstraní háčky/čárky pro spolehlivé hledání
+                const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 
-                fullLibrary: [
-                    { n: 'Aglaonema (Aglaonéma)', s: 7, w: 14 },
-                    { n: 'Aloa pravá (Aloe Vera)', s: 14, w: 21 },
-                    { n: 'Azalka (Rhododendron / Rododendron)', s: 3, w: 6 },
-                    { n: 'Bromélie (Bromélia)', s: 7, w: 12 },
-                    { n: 'Calathea (Kalatea / Modlivka)', s: 3, w: 7 },
-                    { n: 'Caryota (Rybia palma)', s: 5, w: 10 },
-                    { n: 'Dieffenbachia (Difenbachia)', s: 5, w: 10 },
-                    { n: 'Divný Janko (Epipremnum / Potos)', s: 5, w: 12 },
-                    { n: 'Dracena (Dracéna)', s: 7, w: 14 },
-                    { n: 'Echevérie (Skalná ruža)', s: 10, w: 20 },
-                    { n: 'Fialka (Africká)', s: 4, w: 8 },
-                    { n: 'Fittonia (Fitónia)', s: 3, w: 6 },
-                    { n: 'Fíkus lyrata', s: 5, w: 10 },
-                    { n: 'Kaktus (Sukulenty)', s: 14, w: 30 },
-                    { n: 'Kalanchoe (Kolopejka)', s: 10, w: 18 },
-                    { n: 'Kávovník (Coffea)', s: 4, w: 9 },
-                    { n: 'Lilie (Ľalia)', s: 4, w: 8 },
-                    { n: 'Lopatkovec', s: 3, w: 7 },
-                    { n: 'Monstera deliciosa', s: 7, w: 14 },
-                    { n: 'Orchidej (Phalaenopsis)', s: 7, w: 10 },
-                    { n: 'Růže (Ruža)', s: 3, w: 7 },
-                    { n: 'Sansevieria (Svokrin jazyk)', s: 14, w: 30 },
-                    { n: 'Senecio (Starček)', s: 10, w: 20 },
-                    { n: 'Strelitzia (Strelícia)', s: 6, w: 12 },
-                    { n: 'Vánoční hvězda (Vianočná hviezda)', s: 5, w: 10 },
-                    { n: 'Vánoční kaktus (Vianočný kaktus)', s: 7, w: 12 },
-                    { n: 'Zamiokulkas', s: 14, w: 25 },
-                    { n: 'Zelenec', s: 4, w: 10 }
-                ],
+                if (n.includes('kaktus') || n.includes('echeve') || n.includes('aloa') || n.includes('sukulent')) return '🌵';
+                if (n.includes('ruze') || n.includes('ruza') || n.includes('azal') || n.includes('lilie') || n.includes('lalia') || n.includes('fialka') || n.includes('fittonia')) return '🌸';
+                if (n.includes('palma') || n.includes('caryota') || n.includes('juka') || n.includes('yucca') || n.includes('dracena')) return '🌴';
+                if (n.includes('hvezda') || n.includes('hviezda')) return '✨';
+                if (n.includes('strom') || n.includes('fikus') || n.includes('citron') || n.includes('kavovnik')) return '🌳';
+                if (n.includes('levandul') || n.includes('hyacint')) return '🪻';
+                if (n.includes('bylink') || n.includes('mata') || n.includes('bazalka')) return '🌿';
+                if (n.includes('zelenec') || n.includes('asparagus') || n.includes('senecio')) return '🍃';
+                
+                return '🪴'; // Výchozí ikonka pro ostatní
+            },
 
-                getIcon(name) {
-                    const n = name.toLowerCase();
-                    if (n.includes('kaktus') || n.includes('echeve') || n.includes('ruza') || n.includes('aloa')) return '🌵';
-                    if (n.includes('ruze') || n.includes('ruza') || n.includes('azal') || n.includes('lilie') || n.includes('lalia') || n.includes('fialka')) return '🌸';
-                    if (n.includes('palma') || n.includes('caryota') || n.includes('juka') || n.includes('yucca')) return '🌴';
-                    if (n.includes('hvezda') || n.includes('hviezda')) return '✨';
-                    if (n.includes('strom') || n.includes('fikus') || n.includes('citron')) return '🌳';
-                    return '🌿';
-                },
+            init() {
+                const saved = localStorage.getItem('vibeJunglePro');
+                const savedSeason = localStorage.getItem('vibeJungleSeasonPro');
+                if (saved) this.plants = JSON.parse(saved);
+                if (savedSeason) this.season = savedSeason;
+                this.$watch('plants', v => localStorage.setItem('vibeJunglePro', JSON.stringify(v)));
+                setInterval(() => this.recalculateAll(), 60000);
+            },
 
-                init() {
-                    const saved = localStorage.getItem('vibeJunglePro');
-                    const savedSeason = localStorage.getItem('vibeJungleSeasonPro');
-                    if (saved) this.plants = JSON.parse(saved);
-                    if (savedSeason) this.season = savedSeason;
-                    this.$watch('plants', v => localStorage.setItem('vibeJunglePro', JSON.stringify(v)));
-                    setInterval(() => this.recalculateAll(), 60000);
-                },
+            checkLibrary() {
+                const input = this.newName.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                if (input.length < 2) return;
+                const match = this.fullLibrary.find(item => item.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(input));
+                if (match) { this.summerDays = match.s; this.winterDays = match.w; }
+            },
 
-                checkLibrary() {
-                    const input = this.newName.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                    if (input.length < 2) return;
-                    const match = this.fullLibrary.find(item => item.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(input));
-                    if (match) { this.summerDays = match.s; this.winterDays = match.w; }
-                },
+            addPlant() {
+                if (!this.newName) return;
+                const selectedDate = new Date(this.lastWateredDate);
+                const now = new Date();
+                const diffDays = Math.floor(Math.abs(now - selectedDate) / 86400000);
+                const maxDays = this.season === 'summer' ? this.summerDays : this.winterDays;
+                
+                this.plants.push({
+                    id: Date.now(),
+                    name: this.newName,
+                    summerDays: parseInt(this.summerDays),
+                    winterDays: parseInt(this.winterDays),
+                    daysLeft: Math.max(0, maxDays - diffDays),
+                    lastWatered: selectedDate.toLocaleDateString('cs-CZ'),
+                    lastWateredMs: selectedDate.getTime()
+                });
+                this.newName = '';
+                this.lastWateredDate = new Date().toISOString().split('T')[0];
+            },
 
-                addPlant() {
-                    if (!this.newName) return;
-                    const selectedDate = new Date(this.lastWateredDate);
-                    const now = new Date();
-                    const diffDays = Math.floor(Math.abs(now - selectedDate) / 86400000);
-                    const maxDays = this.season === 'summer' ? this.summerDays : this.winterDays;
-                    this.plants.push({
-                        id: Date.now(),
-                        name: this.newName,
-                        summerDays: parseInt(this.summerDays),
-                        winterDays: parseInt(this.winterDays),
-                        daysLeft: Math.max(0, maxDays - diffDays),
-                        lastWatered: selectedDate.toLocaleDateString('cs-CZ'),
-                        lastWateredMs: selectedDate.getTime()
-                    });
-                    this.newName = '';
-                    this.lastWateredDate = new Date().toISOString().split('T')[0];
-                },
+            waterPlant(id) {
+                const now = new Date();
+                let p = this.plants.find(p => p.id === id);
+                p.lastWatered = now.toLocaleDateString('cs-CZ');
+                p.lastWateredMs = now.getTime();
+                p.daysLeft = this.season === 'summer' ? p.summerDays : p.winterDays;
+            },
 
-                waterPlant(id) {
-                    const now = new Date();
-                    let p = this.plants.find(p => p.id === id);
-                    p.lastWatered = now.toLocaleDateString('cs-CZ');
-                    p.lastWateredMs = now.getTime();
-                    p.daysLeft = this.season === 'summer' ? p.summerDays : p.winterDays;
-                },
+            triggerDelete(id) { this.plantToDelete = id; this.showDeleteModal = true; },
+            deletePlant() { this.plants = this.plants.filter(p => p.id !== this.plantToDelete); this.showDeleteModal = false; },
 
-                triggerDelete(id) { this.plantToDelete = id; this.showDeleteModal = true; },
-                deletePlant() { this.plants = this.plants.filter(p => p.id !== this.plantToDelete); this.showDeleteModal = false; },
+            recalculateAll() {
+                const now = new Date().getTime();
+                this.plants.forEach(p => {
+                    const maxDays = this.season === 'summer' ? p.summerDays : p.winterDays;
+                    const daysElapsed = Math.floor((now - p.lastWateredMs) / 86400000);
+                    p.daysLeft = Math.max(0, maxDays - daysElapsed);
+                });
+            },
 
-                recalculateAll() {
-                    const now = new Date().getTime();
-                    this.plants.forEach(p => {
-                        const maxDays = this.season === 'summer' ? p.summerDays : p.winterDays;
-                        const daysElapsed = Math.floor((now - p.lastWateredMs) / 86400000);
-                        p.daysLeft = Math.max(0, maxDays - daysElapsed);
-                    });
-                },
-
-                setSeason(s) {
-                    this.season = s;
-                    localStorage.setItem('vibeJungleSeasonPro', s);
-                    this.recalculateAll();
-                }
+            setSeason(s) {
+                this.season = s;
+                localStorage.setItem('vibeJungleSeasonPro', s);
+                this.recalculateAll();
             }
         }
-    </script>
-</body>
-</html>
+    }
+</script>
