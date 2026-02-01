@@ -50,6 +50,7 @@
                 </div>
             </div>
             <button @click="addPlant()" class="w-full mt-6 bg-green-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl active:scale-[0.98]">
+                this.sendNotify("Test!", "Právě jsi přidala kytku!");
                 Přidat do sbírky +
             </button>
         </div>
@@ -243,4 +244,5 @@
     </script>
 </body>
 </html>
+
 
