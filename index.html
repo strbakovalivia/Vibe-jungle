@@ -32,7 +32,7 @@
                 { n: 'Levandule (Lavandula)', s: 4, w: 10 },
                 { n: 'Lilie (Ľalia)', s: 4, w: 8 },
                 { n: 'Lopatkovec', s: 3, w: 7 },
-                { n: 'Modřenec (Muscari / Muscar / Modrica)', s: 4, w: 8 },
+                { n: 'Modřenec (Muscari / Modrica)', s: 4, w: 8 },
                 { n: 'Monstera deliciosa', s: 7, w: 14 },
                 { n: 'Narcis (Narcissus)', s: 4, w: 8 },
                 { n: 'Orchidej (Phalaenopsis)', s: 7, w: 10 },
@@ -75,7 +75,10 @@
                 const input = this.newName.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                 if (input.length < 2) return;
                 const match = this.fullLibrary.find(item => item.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(input));
-                if (match) { this.summerDays = match.s; this.winterDays = match.w; }
+                if (match) { 
+                    this.summerDays = match.s; 
+                    this.winterDays = match.w; 
+                }
             },
 
             addPlant() {
@@ -106,8 +109,15 @@
                 p.daysLeft = this.season === 'summer' ? p.summerDays : p.winterDays;
             },
 
-            triggerDelete(id) { this.plantToDelete = id; this.showDeleteModal = true; },
-            deletePlant() { this.plants = this.plants.filter(p => p.id !== this.plantToDelete); this.showDeleteModal = false; },
+            triggerDelete(id) { 
+                this.plantToDelete = id; 
+                this.showDeleteModal = true; 
+            },
+
+            deletePlant() { 
+                this.plants = this.plants.filter(p => p.id !== this.plantToDelete); 
+                this.showDeleteModal = false; 
+            },
 
             recalculateAll() {
                 const now = new Date().getTime();
@@ -123,9 +133,6 @@
                 localStorage.setItem('vibeJungleSeasonPro', s);
                 this.recalculateAll();
             }
-        }; // Tady chyběl tento středník a závorka před ním!
+        };
     }
 </script>
-
-
-
