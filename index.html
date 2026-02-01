@@ -128,8 +128,10 @@
                     const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                     if (n.includes('kaktus') || n.includes('aloa')) return '🌵';
                     if (n.includes('hvezda') || n.includes('hviezda') || n.includes('euphorbia') || n.includes('poinsettia')) return '✨';
-                    if (n.includes('ruze') || n.includes('azal') || n.includes('lalia') || n.includes('tulipan') || n.includes('narcis') || n.includes('zvonek') || n.includes('vres')) return '🌸';
+                    if (n.includes('azal') || n.includes('lalia') || n.includes('narcis') || n.includes('zvonek') || n.includes('vres')) return '🌸';
                     if (n.includes('hyacint') || n.includes('levandul')) return '🪻';
+                    if (n.includes('tulipan') ) return '🌷';
+                    if (n.includes('ruze') ) return '🌹';
                     if (n.includes('palma') || n.includes('dracena')) return '🌴';
                     return '🪴';
                 },
@@ -199,6 +201,7 @@
     </script>
 </body>
 </html>
+
 
 
 
