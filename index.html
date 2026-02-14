@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#064e3b">
-    <title>Plant Vibe Pro - Expert Mode</title>
+    <title>Plant Vibe Pro - Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,7 +12,6 @@
         [x-cloak] { display: none !important; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
-        .star-rating { letter-spacing: 2px; }
     </style>
 </head>
 <body class="bg-[#f8faf8] p-4 md:p-8 font-['Plus_Jakarta_Sans']" x-data="plantApp()">
@@ -33,7 +32,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="lg:col-span-1">
                     <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Název / Druh</label>
-                    <input x-model="newName" @input="checkLibrary()" list="plantSuggestions" type="text" placeholder="Hledej..." class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-green-500 outline-none">
+                    <input 
+                        x-model="newName" 
+                        @input="checkLibrary()" 
+                        @change="checkLibrary()"
+                        list="plantSuggestions" 
+                        type="text" 
+                        placeholder="Napiš název..." 
+                        class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-green-500 outline-none">
                     <datalist id="plantSuggestions">
                         <template x-for="item in fullLibrary" :key="item.n">
                             <option :value="item.n"></option>
@@ -56,7 +62,7 @@
                         <div class="text-6xl bg-gray-50 w-24 h-24 flex items-center justify-center rounded-[2rem]" x-text="plant.daysLeft <= 0 ? '🥀' : getIcon(plant.name)"></div>
                         <div class="pt-2">
                              <p class="text-[10px] font-black text-gray-400 uppercase mb-1">Náročnost</p>
-                             <div class="text-amber-400 star-rating text-lg font-bold" x-text="'⭐'.repeat(getCare(plant.name).difficulty)"></div>
+                             <div class="text-amber-400 text-lg font-bold" x-text="'⭐'.repeat(getCare(plant.name).difficulty)"></div>
                         </div>
                     </div>
                     
@@ -141,72 +147,69 @@
                 fullLibrary: [
                     { 
                         n: 'Ananas', s: 4, w: 9, difficulty: 3,
-                        place: 'Přímé slunce a teplo! Potřebuje co nejvíc světla, ideálně jižní okno.', 
-                        water: 'Vlažná, měkká voda. Zalévat do listové růžice i ke kořenům. Substrát udržovat mírně vlhký.',
-                        fertilizer: '1x za 14 dní tekuté hnojivo na citrusy nebo plodovou zeleninu v období růstu.',
-                        soil: 'Propustný, kyselejší mix: Substrát pro pokojovky + rašelina + perlit v poměru 2:1:1.',
-                        repot: 'Jednou za rok nebo dva, když kořeny zaplní květináč. Pozor na křehké kořeny.',
-                        warnings: ['Hnědé špičky listů = příliš suchý vzduch', 'Bledé listy = málo světla', 'Zahnívání středu růžice = příliš studená voda nebo chlad v místnosti']
+                        place: 'Přímé slunce a teplo! Jižní okno je ideál.', 
+                        water: 'Vlažná, měkká voda. Zalévat do růžice i ke kořenům.',
+                        fertilizer: '1x za 14 dní tekuté hnojivo na citrusy/plody v létě.',
+                        soil: 'Propustný, kyselejší mix: Substrát pro pokojovky + rašelina + perlit (2:1:1).',
+                        repot: 'Jednou za rok, pozor na křehké kořeny.',
+                        warnings: ['Hnědé špičky = suchý vzduch', 'Bledé listy = málo světla', 'Zahnívání středu = studená voda']
                     },
                     { 
                         n: 'Monstera', s: 7, w: 14, difficulty: 2,
-                        place: 'Světlé místo bez přímého slunce (polostín).', 
-                        water: 'Odstátá, pokojová teplota. Nesnáší přelití.',
-                        fertilizer: 'V období růstu (březen-říjen) 1x za 14 dní tekutým hnojivem na pokojovky.',
-                        soil: 'Vzdušný mix: 50% substrát pro pokojovky, 25% perlit, 25% borová kůra.',
-                        repot: 'Jednou za 2 roky na jaře, když kořeny vylézají ze dna.',
-                        warnings: ['Žluté listy = přelití/zahnívání kořenů', 'Hnědé suché špičky = nízká vlhkost vzduchu', 'Malé listy bez děr = málo světla']
+                        place: 'Světlé místo bez přímého slunce.', 
+                        water: 'Odstátá voda. Před další zálivkou nechat proschnout.',
+                        fertilizer: 'Březen-říjen 1x za 14 dní.',
+                        soil: 'Vzdušný mix: Substrát + perlit + borová kůra.',
+                        repot: 'Jednou za 2 roky na jaře.',
+                        warnings: ['Žluté listy = přelití', 'Hnědé suché špičky = nízká vlhkost', 'Malé listy bez děr = málo světla']
                     },
                     { 
                         n: 'Zamiokulkas', s: 14, w: 25, difficulty: 1,
-                        place: 'Téměř kamkoliv, zvládne i stín. Pozor na přímé slunce.', 
-                        water: 'Měkká voda, až když je substrát úplně suchý. Nesmí stát ve vodě!',
-                        fertilizer: 'Stačí 1x měsíčně v létě poloviční dávka hnojiva.',
-                        soil: 'Dobře propustný: substrát pro kaktusy nebo mix s pískem a perlitem.',
-                        repot: 'Až když kořeny (hlízy) začnou deformovat květináč.',
-                        warnings: ['Žloutnutí stonků = totální přelití', 'Vrásčité listy = extrémní sucho', 'Měkký stonek u báze = hniloba hlízy']
+                        place: 'Snese i stín, nesnáší přímé slunce.', 
+                        water: 'Až když je substrát úplně suchý. Nesnáší mokro.',
+                        fertilizer: '1x měsíčně v létě poloviční dávka.',
+                        soil: 'Substrát pro kaktusy nebo mix s pískem.',
+                        repot: 'Až když kořeny deformují květináč.',
+                        warnings: ['Žloutnutí stonků = moc vody', 'Vrásčité listy = sucho', 'Měkký stonek = hniloba hlízy']
                     },
                     { 
-                        n: 'Spathiphyllum (Lopatkovec)', s: 3, w: 7, difficulty: 2,
-                        place: 'Polostín až stín. Nesnáší průvan.', 
-                        water: 'Miluje vlhko. Ideálně dešťová nebo převařená voda.',
-                        fertilizer: 'Každé 2 týdny v období květu hnojivem pro kvetoucí rostliny.',
-                        soil: 'Lehký, rašelinový substrát s perlitem pro udržení vlhkosti.',
-                        repot: 'Každé jaro, miluje čerstvou zeminu.',
-                        warnings: ['Svěšené listy = má hroznou žízeň', 'Hnědé skvrny na listech = popálení sluncem', 'Černé špičky = hromadění solí z tvrdé vody']
+                        n: 'Lopatkovec', s: 3, w: 7, difficulty: 2,
+                        place: 'Polostín, stín. Žádný průvan.', 
+                        water: 'Miluje vlhko a rosení.',
+                        fertilizer: 'Každé 2 týdny v době květu.',
+                        soil: 'Lehký, rašelinový s perlitem.',
+                        repot: 'Každé jaro.',
+                        warnings: ['Svěšené listy = žízeň', 'Hnědé skvrny = slunce', 'Černé špičky = tvrdá voda']
                     },
                     { 
-                        n: 'Orchidej (Phalaenopsis)', s: 7, w: 10, difficulty: 3,
-                        place: 'Dostatek světla, ale ne přímé polední slunce.', 
-                        water: 'Namáčení květináče na 15 min do měkké vody, pak nechat úplně odkapat.',
-                        fertilizer: 'Speciální hnojivo pro orchideje 1x za 3 týdny během růstu.',
-                        soil: 'Speciální substrát pro orchideje (převážně kůra).',
-                        repot: 'Až po odkvětu, když substrát tlí nebo kořeny zaplní nádobu.',
-                        warnings: ['Měkké svraštělé listy = hniloba kořenů z přelití', 'Žluté listy = příliš slunce', 'Poupata opadávají = průvan']
+                        n: 'Orchidej', s: 7, w: 10, difficulty: 3,
+                        place: 'Dostatek světla, ale ne polední žár.', 
+                        water: 'Namáčení na 15 min, pak nechat odkapat.',
+                        fertilizer: 'Hnojivo pro orchideje 1x za 3 týdny.',
+                        soil: 'Speciální kůra pro orchideje.',
+                        repot: 'Až po odkvětu.',
+                        warnings: ['Měkké listy = hniloba kořenů', 'Žluté listy = moc slunce', 'Opad poupat = zima/průvan']
                     }
                 ],
 
-                defaultCare: {
-                    difficulty: 2,
-                    place: 'Světlé místo bez přímého slunce.',
-                    water: 'Odstátá voda, zalévat po proschnutí horní vrstvy.',
-                    fertilizer: 'Hnojit univerzálním hnojivem 1x za 14 dní v sezóně.',
-                    soil: 'Standardní substrát pro pokojovky s trochou perlitu.',
-                    repot: 'Dle potřeby na jaře.',
-                    warnings: ['Změna barvy listů značí chybu v zálivce', 'Povadlé listy = sucho', 'Měkké stonky = hniloba']
-                },
-
                 getCare(name) {
                     const found = this.fullLibrary.find(item => name.toLowerCase().includes(item.n.toLowerCase()));
-                    return found || this.defaultCare;
+                    return found || {
+                        difficulty: 2,
+                        place: 'Světlé místo bez přímého slunce.',
+                        water: 'Odstátá voda, zalévat po proschnutí horní vrstvy.',
+                        fertilizer: 'Hnojit 1x za 14 dní v sezóně.',
+                        soil: 'Standardní substrát s perlitem.',
+                        repot: 'Dle potřeby na jaře.',
+                        warnings: ['Změna barvy listů = chyba v zálivce', 'Povadlé listy = sucho']
+                    };
                 },
 
                 getIcon(name) {
                     const n = name.toLowerCase();
                     if (n.includes('ananas')) return '🍍';
                     if (n.includes('kaktus') || n.includes('sukulent')) return '🌵';
-                    if (n.includes('monstera') || n.includes('fikus') || n.includes('zamiokulkas')) return '🌴';
-                    if (n.includes('lopatkovec')) return '✨';
+                    if (n.includes('monstera') || n.includes('fikus')) return '🌴';
                     if (n.includes('orchidej')) return '🌸';
                     return '🪴';
                 },
@@ -217,17 +220,22 @@
                     if (saved) this.plants = JSON.parse(saved);
                     if (savedSeason) this.season = savedSeason;
                     this.recalculateAll();
-                    setInterval(() => this.recalculateAll(), 60000);
                 },
 
+                // OPRAVENÁ FUNKCE KONTROLY KNIHOVNY
                 checkLibrary() {
+                    if (!this.newName) return;
                     const input = this.newName.toLowerCase().trim();
-                    if (input.length > 2) {
-                        const match = this.fullLibrary.find(item => item.n.toLowerCase().includes(input));
-                        if (match) { 
-                            this.summerDays = match.s; 
-                            this.winterDays = match.w; 
-                        }
+                    
+                    // Najdeme shodu v knihovně
+                    const match = this.fullLibrary.find(item => 
+                        input.includes(item.n.toLowerCase()) || 
+                        item.n.toLowerCase().includes(input)
+                    );
+
+                    if (match) {
+                        this.summerDays = match.s;
+                        this.winterDays = match.w;
                     }
                 },
 
@@ -237,19 +245,24 @@
                     selectedDate.setHours(12, 0, 0, 0);
                     const now = new Date();
                     const diffDays = Math.floor((now - selectedDate) / 86400000);
-                    const maxDays = this.season === 'summer' ? this.summerDays : this.winterDays;
                     
+                    // Ujistíme se, že máme správné dny z knihovny před přidáním
+                    this.checkLibrary();
+
                     this.plants.push({
                         id: Date.now(),
                         name: this.newName,
                         summerDays: parseInt(this.summerDays),
                         winterDays: parseInt(this.winterDays),
-                        daysLeft: Math.max(0, maxDays - diffDays),
+                        daysLeft: Math.max(0, (this.season === 'summer' ? this.summerDays : this.winterDays) - diffDays),
                         lastWatered: selectedDate.toLocaleDateString('cs-CZ'),
                         lastWateredMs: selectedDate.getTime()
                     });
+                    
+                    this.save();
                     this.newName = '';
-                    this.lastWateredDate = new Date().toISOString().split('T')[0];
+                    this.summerDays = 7;
+                    this.winterDays = 14;
                 },
 
                 waterPlant(id) {
@@ -259,7 +272,8 @@
                     if (p) {
                         p.lastWatered = now.toLocaleDateString('cs-CZ');
                         p.lastWateredMs = now.getTime();
-                        p.daysLeft = this.season === 'summer' ? p.summerDays : p.winterDays;
+                        this.recalculateAll();
+                        this.save();
                     }
                 },
 
@@ -267,6 +281,7 @@
                 deletePlant() { 
                     this.plants = this.plants.filter(p => p.id !== this.plantToDelete); 
                     this.showDeleteModal = false; 
+                    this.save();
                 },
 
                 recalculateAll() {
@@ -276,6 +291,10 @@
                         const daysElapsed = Math.floor((now - p.lastWateredMs) / 86400000);
                         p.daysLeft = Math.max(0, maxDays - daysElapsed);
                     });
+                },
+
+                save() {
+                    localStorage.setItem('vibeJunglePro', JSON.stringify(this.plants));
                 },
 
                 setSeason(s) {
