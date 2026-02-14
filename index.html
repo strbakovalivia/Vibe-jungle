@@ -1,3 +1,10 @@
+To je skvělý úlovek! Ananas je super kousek do sbírky, ale umí být trochu tvrdohlavý, pokud jde o světlo a vodu.
+
+Přidal jsem Ananas do knihovny se všemi parametry: náročnost, umístění, hnojení, specifický substrát (miluje kyselou půdu!) a samozřejmě SOS znamení, na co si dát bacha.
+
+Zde je aktualizovaný kód:
+
+HTML
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -84,15 +91,15 @@
 
                     <div x-show="showCare" x-transition x-cloak class="mt-6 pt-6 border-t border-dashed border-amber-200 text-sm space-y-4">
                         <div class="bg-amber-50/50 p-4 rounded-2xl">
-                            <p class="font-bold text-amber-900 mb-1 underline flex items-center gap-2">📍 Umístění</p>
+                            <p class="font-bold text-amber-900 mb-1 underline">📍 Umístění</p>
                             <p class="text-amber-800" x-text="getCare(plant.name).place"></p>
                         </div>
                         <div class="bg-blue-50/50 p-4 rounded-2xl">
-                            <p class="font-bold text-blue-900 mb-1 underline flex items-center gap-2">💧 Voda</p>
+                            <p class="font-bold text-blue-900 mb-1 underline">💧 Voda</p>
                             <p class="text-blue-800" x-text="getCare(plant.name).water"></p>
                         </div>
                         <div class="bg-purple-50/50 p-4 rounded-2xl">
-                            <p class="font-bold text-purple-900 mb-1 underline flex items-center gap-2">🧪 Hnojení</p>
+                            <p class="font-bold text-purple-900 mb-1 underline">🧪 Hnojení</p>
                             <p class="text-purple-800" x-text="getCare(plant.name).fertilizer"></p>
                         </div>
                         <div class="bg-stone-50 p-4 rounded-2xl">
@@ -140,6 +147,15 @@
                 
                 fullLibrary: [
                     { 
+                        n: 'Ananas', s: 4, w: 9, difficulty: 3,
+                        place: 'Přímé slunce a teplo! Potřebuje co nejvíc světla, ideálně jižní okno.', 
+                        water: 'Vlažná, měkká voda. Zalévat do listové růžice i ke kořenům. Substrát udržovat mírně vlhký.',
+                        fertilizer: '1x za 14 dní tekuté hnojivo na citrusy nebo plodovou zeleninu v období růstu.',
+                        soil: 'Propustný, kyselejší mix: Substrát pro pokojovky + rašelina + perlit v poměru 2:1:1.',
+                        repot: 'Jednou za rok nebo dva, když kořeny zaplní květináč. Pozor na křehké kořeny.',
+                        warnings: ['Hnědé špičky listů = příliš suchý vzduch', 'Bledé listy = málo světla', 'Zahnívání středu růžice = příliš studená voda nebo chlad v místnosti']
+                    },
+                    { 
                         n: 'Monstera', s: 7, w: 14, difficulty: 2,
                         place: 'Světlé místo bez přímého slunce (polostín).', 
                         water: 'Odstátá, pokojová teplota. Nesnáší přelití.',
@@ -168,21 +184,12 @@
                     },
                     { 
                         n: 'Orchidej (Phalaenopsis)', s: 7, w: 10, difficulty: 3,
-                        place: 'Dostatek světla, ale ne přímé polední slunce (severní/východní okno).', 
-                        water: 'Namáčení celého květináče na 15 min do měkké vody, pak nechat odkapat.',
+                        place: 'Dostatek světla, ale ne přímé polední slunce.', 
+                        water: 'Namáčení květináče na 15 min do měkké vody, pak nechat úplně odkapat.',
                         fertilizer: 'Speciální hnojivo pro orchideje 1x za 3 týdny během růstu.',
-                        soil: 'Speciální substrát pro orchideje (převážně kůra a mechy).',
-                        repot: 'Až po odkvětu, když substrát začne tlet nebo kořeny zaplní nádobu.',
-                        warnings: ['Měkké svraštělé listy = nedostatek vody nebo uhnilé kořeny', 'Žluté listy = příliš slunce', 'Poupata opadávají = průvan nebo zima']
-                    },
-                    { 
-                        n: 'Calathea (Kalatea)', s: 4, w: 8, difficulty: 5,
-                        place: 'Vyšší vzdušná vlhkost, stabilní teplota a polostín. Žádné slunce!', 
-                        water: 'Vždy mírně vlhký substrát, měkká vlažná voda.',
-                        fertilizer: 'Pravidelně 1x za 14 dní v létě, velmi opatrně v zimě.',
-                        soil: 'Mix: substrát pro pokojovky, rašelina, perlit a trocha dřevěného uhlí.',
-                        repot: 'Každé jaro do jen o trochu většího květináče.',
-                        warnings: ['Kroutící se listy = suchý vzduch / suchý substrát', 'Hnědé okraje listů = tvrdá voda', 'Povadlé listy = zima nebo průvan']
+                        soil: 'Speciální substrát pro orchideje (převážně kůra).',
+                        repot: 'Až po odkvětu, když substrát tlí nebo kořeny zaplní nádobu.',
+                        warnings: ['Měkké svraštělé listy = hniloba kořenů z přelití', 'Žluté listy = příliš slunce', 'Poupata opadávají = průvan']
                     }
                 ],
 
@@ -203,9 +210,10 @@
 
                 getIcon(name) {
                     const n = name.toLowerCase();
+                    if (n.includes('ananas')) return '🍍';
                     if (n.includes('kaktus') || n.includes('sukulent')) return '🌵';
                     if (n.includes('monstera') || n.includes('fikus') || n.includes('zamiokulkas')) return '🌴';
-                    if (n.includes('lopatkovec') || n.includes('calathea')) return '✨';
+                    if (n.includes('lopatkovec')) return '✨';
                     if (n.includes('orchidej')) return '🌸';
                     return '🪴';
                 },
