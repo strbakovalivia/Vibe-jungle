@@ -4,21 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#064e3b">
-    <title>Plant Vibe Pro</title>
+    <title>Plant Vibe Pro - Expert Mode</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
-    <style> [x-cloak] { display: none !important; } </style>
+    <style> 
+        [x-cloak] { display: none !important; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+    </style>
 </head>
 <body class="bg-[#f8faf8] p-4 md:p-8 font-['Plus_Jakarta_Sans']" x-data="plantApp()">
 
     <div class="max-w-4xl mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-center mb-10 bg-white p-6 rounded-[2.5rem] shadow-sm border border-green-100 gap-4">
             <div>
-                <h1 class="text-3xl font-extrabold text-green-900">
-                    Moje Džungle 🌿 <span class="text-green-500 opacity-50" x-text="`(${plants.length})`"></span>
-                </h1>
+                <h1 class="text-3xl font-extrabold text-green-900">Moje Džungle 🌿</h1>
                 <p class="text-green-600 text-sm font-medium" x-text="season === 'summer' ? 'Letní režim ☀️' : 'Zimní režim ❄️'"></p>
             </div>
             <div class="flex bg-gray-100 p-1 rounded-2xl">
@@ -29,40 +30,32 @@
 
         <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-green-100 mb-10">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
+                <div class="lg:col-span-1">
                     <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Název / Druh</label>
-                    <input x-model="newName" @input="checkLibrary()" list="plantSuggestions" type="text" placeholder="Hledej název..." class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-green-500 outline-none">
+                    <input x-model="newName" @input="checkLibrary()" list="plantSuggestions" type="text" placeholder="Hledej..." class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 focus:ring-2 focus:ring-green-500 outline-none">
                     <datalist id="plantSuggestions">
                         <template x-for="item in fullLibrary" :key="item.n">
                             <option :value="item.n"></option>
                         </template>
                     </datalist>
                 </div>
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Léto (dny)</label>
-                    <input x-model="summerDays" type="number" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 text-orange-600 font-bold focus:ring-2 focus:ring-orange-400 outline-none">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Zima (dny)</label>
-                    <input x-model="winterDays" type="number" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 text-blue-600 font-bold focus:ring-2 focus:ring-blue-400 outline-none">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-1">Naposledy zalito</label>
-                    <input x-model="lastWateredDate" type="date" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 font-bold text-gray-700 focus:ring-2 focus:ring-green-500 outline-none">
-                </div>
+                <div><label class="text-[10px] font-black uppercase text-gray-400 ml-1">Léto (dny)</label><input x-model="summerDays" type="number" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 text-orange-600 font-bold outline-none"></div>
+                <div><label class="text-[10px] font-black uppercase text-gray-400 ml-1">Zima (dny)</label><input x-model="winterDays" type="number" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 text-blue-600 font-bold outline-none"></div>
+                <div><label class="text-[10px] font-black uppercase text-gray-400 ml-1">Naposledy zalito</label><input x-model="lastWateredDate" type="date" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 font-bold text-gray-700 outline-none"></div>
             </div>
-            <button @click="addPlant(); sendNotify('Povedlo se! 🎉', 'Kytka byla přidána do sbírky.')" class="w-full mt-6 bg-green-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl active:scale-[0.98]">
-                Přidat do sbírky +
-            </button>
+            <button @click="addPlant()" class="w-full mt-6 bg-green-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl active:scale-[0.98]">Přidat kytku do sbírky +</button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <template x-for="plant in plants" :key="plant.id">
-                <div class="bg-white rounded-[3rem] p-8 shadow-sm border border-green-50 relative transition-all duration-500" :class="plant.daysLeft <= 0 ? 'bg-red-50 border-red-100' : ''">
+                <div class="bg-white rounded-[3rem] p-8 shadow-sm border border-green-50 relative transition-all flex flex-col h-full" x-data="{ showCare: false }">
                     <button @click="triggerDelete(plant.id)" class="absolute top-8 right-8 text-gray-300 hover:text-red-500 transition-colors">✕</button>
+                    
                     <div class="text-6xl mb-6 bg-gray-50 w-24 h-24 flex items-center justify-center rounded-[2rem]" x-text="plant.daysLeft <= 0 ? '🥀' : getIcon(plant.name)"></div>
+                    
                     <h2 class="text-2xl font-black text-gray-900 mb-1" x-text="plant.name"></h2>
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">Naposledy: <span class="text-gray-600" x-text="plant.lastWatered"></span></p>
+                    
                     <div class="space-y-4 mb-8">
                         <div class="flex justify-between items-end">
                             <div>
@@ -74,7 +67,35 @@
                             <div class="h-full rounded-full transition-all duration-1000" :class="plant.daysLeft <= 0 ? 'bg-red-500' : 'bg-green-500'" :style="`width: ${Math.max(0, (plant.daysLeft / (season === 'summer' ? (plant.summerDays || 7) : (plant.winterDays || 14))) * 100)}%`" ></div>
                         </div>
                     </div>
-                    <button @click="waterPlant(plant.id)" class="w-full py-5 bg-green-600 text-white font-black rounded-2xl hover:bg-green-700 transition-all shadow-xl active:scale-95"> ZALÍT NYNÍ 💧 </button>
+
+                    <div class="flex gap-2 mt-auto">
+                        <button @click="waterPlant(plant.id)" class="flex-1 py-4 bg-green-600 text-white font-black rounded-2xl hover:bg-green-700 transition-all shadow-lg active:scale-95">ZALÍT 💧</button>
+                        <button @click="showCare = !showCare" class="px-4 py-4 bg-amber-100 text-amber-700 font-black rounded-2xl hover:bg-amber-200 transition-all">📖</button>
+                    </div>
+
+                    <div x-show="showCare" x-transition x-cloak class="mt-6 pt-6 border-t border-dashed border-amber-200 text-sm space-y-4">
+                        <div class="bg-amber-50/50 p-4 rounded-2xl">
+                            <p class="font-bold text-amber-900 mb-1 underline">📍 Umístění</p>
+                            <p class="text-amber-800" x-text="getCare(plant.name).place"></p>
+                        </div>
+                        <div class="bg-blue-50/50 p-4 rounded-2xl">
+                            <p class="font-bold text-blue-900 mb-1 underline">💧 Voda</p>
+                            <p class="text-blue-800" x-text="getCare(plant.name).water"></p>
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded-2xl">
+                            <p class="font-bold text-stone-900 mb-1 underline">🪴 Substrát & Přesazování</p>
+                            <p class="text-stone-800 mb-2"><strong class="text-[10px] uppercase">Mix:</strong> <span x-text="getCare(plant.name).soil"></span></p>
+                            <p class="text-stone-800"><strong class="text-[10px] uppercase">Kdy:</strong> <span x-text="getCare(plant.name).repot"></span></p>
+                        </div>
+                        <div class="bg-red-50/50 p-4 rounded-2xl border border-red-100">
+                            <p class="font-bold text-red-900 mb-1 underline">⚠️ SOS: Co je špatně?</p>
+                            <ul class="text-red-800 space-y-1 text-xs list-disc pl-4">
+                                <template x-for="sign in getCare(plant.name).warnings">
+                                    <li x-text="sign"></li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </template>
         </div>
@@ -86,7 +107,7 @@
                 <p class="text-gray-500 mb-8 text-sm">Tento krok nejde vzít zpět.</p>
                 <div class="flex flex-col gap-3">
                     <button @click="showDeleteModal = false" class="w-full py-4 bg-gray-100 text-gray-800 font-bold rounded-2xl hover:bg-gray-200 transition-all">Ne, proboha! 🌿</button>
-                    <button @click="deletePlant()" class="w-full py-4 bg-red-100 text-red-600 font-bold rounded-2xl hover:bg-red-200 transition-all">Ano, již spinká (RIP) ⚰️</button>
+                    <button @click="deletePlant()" class="w-full py-4 bg-red-100 text-red-600 font-bold rounded-2xl hover:bg-red-200 transition-all">Ano, sbohem ⚰️</button>
                 </div>
             </div>
         </div>
@@ -104,80 +125,61 @@
                 showDeleteModal: false,
                 plantToDelete: null,
                 
+                // DATA KNIHOVNY VČETNĚ "SKŘÍNĚ PÉČE"
                 fullLibrary: [
-                    { n: 'Adiantum (Netík)', s: 3, w: 6 },
-                    { n: 'Aeschynanthus (Rděnka / Eschynantus)', s: 5, w: 10 },
-                    { n: 'Aglaonema', s: 7, w: 14 },
-                    { n: 'Alocasia (Alokázie / Alokázia)', s: 4, w: 9 },
-                    { n: 'Aloa pravá (Aloe Vera)', s: 14, w: 21 },
-                    { n: 'Alpinia (Alpínia / Galgán)', s: 5, w: 10 },
-                    { n: 'Amaryllis (Amarylka / Hvězdník)', s: 5, w: 10 },                
-                    { n: 'Ananas (Ananás)', s: 7, w: 12 },
-                    { n: 'Anthuria (Toulitka / Antúrie)', s: 5, w: 10 },
-                    { n: 'Aphelandra (Afelandra)', s: 4, w: 8 },
-                    { n: 'Asparagus (Chřest / Špargľa)', s: 4, w: 9 },
-                    { n: 'Asplenium (Sleziník)', s: 4, w: 8 },
-                    { n: 'Athyrium (Papratka / Papraďka)', s: 3, w: 7 },
-                    { n: 'Azalka (Rhododendron)', s: 3, w: 6 },
-                    { n: 'Bellis (Sedmikráska / Sedmokráska)', s: 4, w: 8 },
-                    { n: 'Begonie (Begónia)', s: 3, w: 7 },                
-                    { n: 'Bromélie', s: 7, w: 12 },
-                    { n: 'Calathea (Kalatea)', s: 3, w: 7 },
-                    { n: 'Clusia (Klusie)', s: 6, w: 12 },
-                    { n: 'Codiaeum (Kroton / Krotónovec)', s: 5, w: 10 },
-                    { n: 'Coffea (Kávovník)', s: 4, w: 9 },
-                    { n: 'Coleus (Koleus)', s: 3, w: 7 },
-                    { n: 'Cyperus (Kočičí tráva / Mačacia tráva)', s: 2, w: 5 },
-                    { n: 'Dianthus (Hvozdík / Klinček)', s: 4, w: 9 },
-                    { n: 'Dieffenbachia', s: 5, w: 10 },
-                    { n: 'Dracena', s: 7, w: 14 },
-                    { n: 'Epipremnum (Divný Janko / Šplhavnice)', s: 5, w: 12 },
-                    { n: 'Fialka (Africká)', s: 4, w: 8 },
-                    { n: 'Fíkus', s: 5, w: 10 },
-                    { n: 'Gerbera', s: 4, w: 9 },
-                    { n: 'Guzmánie (Guzmánia)', s: 7, w: 12 },
-                    { n: 'Hedera (Břečťan / Brečtan)', s: 5, w: 10 },
-                    { n: 'Hydrangea (Hortenzie / Hortenzia)', s: 3, w: 7 },
-                    { n: 'Hyacint', s: 4, w: 9 },
-                    { n: 'Chryzantéma', s: 4, w: 8 },
-                    { n: 'Kaktus / Sukulent', s: 14, w: 30 },
-                    { n: 'Kalanchoe (Kolopejka)', s: 10, w: 18 },
-                    { n: 'Levandule (Levanduľa)', s: 4, w: 10 },
-                    { n: 'Spathiphyllum (Lopatkovec)', s: 3, w: 7 },
-                    { n: 'Ľalia (Lilie)', s: 4, w: 8 },
-                    { n: 'Maranta', s: 4, w: 9 },
-                    { n: 'Monstera', s: 7, w: 14 },
-                    { n: 'Nephrolepis (Ledviník / Nefrolepka)', s: 3, w: 7 },
-                    { n: 'Orchidej', s: 7, w: 10 },
-                    { n: 'Peperomia (Pepřinec / Pieprovec)', s: 7, w: 12 },
-                    { n: 'Philodendron (Filodendron)', s: 6, w: 12 },
-                    { n: 'Pilea', s: 5, w: 10 },
-                    { n: 'Ranunculus (Pryskyřník / Iskerník)', s: 4, w: 8 },
-                    { n: 'Růže (Ruža)', s: 3, w: 7 },
-                    { n: 'Sansevieria', s: 14, w: 30 },
-                    { n: 'Schefflera (Šeflera)', s: 6, w: 12 },
-                    { n: 'Strelície (Strelícia)', s: 6, w: 12 },
-                    { n: 'Syngonium (Husia noha)', s: 5, w: 10 },
-                    { n: 'Tradescantia (Poděnka / Podenka)', s: 5, w: 10 },
-                    { n: 'Vánoční hvězda (Euphorbia)', s: 5, w: 10 },
-                    { n: 'Zamiokulkas', s: 14, w: 25 },
-                    { n: 'Zelenec', s: 4, w: 10 },
-                    { n: 'Zvonek (Campanula)', s: 3, w: 7 }
+                    { 
+                        n: 'Monstera', s: 7, w: 14, 
+                        place: 'Světlé místo bez přímého slunce (polostín).', 
+                        water: 'Odstátá, pokojová teplota. Nesnáší přelití.',
+                        soil: 'Vzdušný mix: 50% substrát pro pokojovky, 25% perlit, 25% borová kůra/keramzit.',
+                        repot: 'Jednou za 2 roky na jaře, když kořeny vylézají ze dna.',
+                        warnings: ['Žluté listy = přelití/zahnívání kořenů', 'Hnědé suché špičky = nízká vlhkost vzduchu', 'Malé listy bez děr = málo světla']
+                    },
+                    { 
+                        n: 'Zamiokulkas', s: 14, w: 25, 
+                        place: 'Téměř kamkoliv, zvládne i stín. Pozor na přímé slunce.', 
+                        water: 'Měkká voda, až když je substrát úplně suchý. Méně je více!',
+                        soil: 'Dobře propustný: substrát pro kaktusy nebo mix s pískem a perlitem.',
+                        repot: 'Až když kořeny (hlízy) začnou deformovat květináč.',
+                        warnings: ['Žloutnutí stonků = totální přelití', 'Vrásčité listy = extrémní sucho', 'Měkký stonek u báze = hniloba hlízy']
+                    },
+                    { 
+                        n: 'Spathiphyllum (Lopatkovec)', s: 3, w: 7, 
+                        place: 'Polostín až stín. Nesnáší průvan.', 
+                        water: 'Miluje vlhko. Ideálně dešťová nebo převařená voda.',
+                        soil: 'Lehký, rašelinový substrát s perlitem pro udržení vlhkosti.',
+                        repot: 'Každé jaro, miluje čerstvou zeminu.',
+                        warnings: ['Svěšené listy = má hroznou žízeň', 'Hnědé skvrny na listech = popálení sluncem', 'Černé špičky = hromadění solí z tvrdé vody']
+                    },
+                    { 
+                        n: 'Fíkus', s: 5, w: 10, 
+                        place: 'Stabilní světlé místo. Nesnáší stěhování a změny teplot.', 
+                        water: 'Mírná zálivka, nesmí stát ve vodě.',
+                        soil: 'Substrát pro pokojovky + trocha keramzitu na dno jako drenáž.',
+                        repot: 'Až když je květináč úplně plný kořenů.',
+                        warnings: ['Opadávání zelených listů = průvan nebo změna místa', 'Žloutnutí odspodu = příliš vody', 'Lepkavé listy = škůdci (puklice)']
+                    }
                 ],
 
+                // Fallback pro neznámé rostliny
+                defaultCare: {
+                    place: 'Světlé místo bez přímého slunce.',
+                    water: 'Odstátá voda, zalévat po proschnutí horní vrstvy.',
+                    soil: 'Standardní substrát pro pokojovky s trochou perlitu.',
+                    repot: 'Dle potřeby na jaře.',
+                    warnings: ['Změna barvy listů značí chybu v zálivce', 'Povadlé listy = sucho', 'Měkké stonky = hniloba']
+                },
+
+                getCare(name) {
+                    const found = this.fullLibrary.find(item => name.toLowerCase().includes(item.n.toLowerCase()));
+                    return found || this.defaultCare;
+                },
+
                 getIcon(name) {
-                    const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                    if (n.includes('kaktus') || n.includes('aloa') || n.includes('sukulent') || n.includes('kalanchoe') || n.includes('sansevieria')) return '🌵';
-                    if (n.includes('ruze') || n.includes('azal') || n.includes('lalia') || n.includes('lilie') || n.includes('tulipan') || n.includes('narcis') || n.includes('zvonek') || n.includes('vres') || n.includes('gerbera') || n.includes('chryzant') || n.includes('bellis') || n.includes('ranunculus') || n.includes('dianthus') || n.includes('hortenz')) return '🌸';
-                    if (n.includes('hyacint') || n.includes('levandul')) return '🪻';
-                    if (n.includes('palma') || n.includes('dracena') || n.includes('monstera') || n.includes('fikus') || n.includes('schefflera') || n.includes('philodendron')) return '🌴';
-                    if (n.includes('hvezda') || n.includes('euphorbia') || n.includes('guzmania') || n.includes('anthuria') || n.includes('streliz')) return '✨';
-                    if (n.includes('bylink') || n.includes('mata') || n.includes('koleus') || n.includes('coleus') || n.includes('maranta') || n.includes('peperomia')) return '🌿';
-                    if (n.includes('asparag') || n.includes('adiantum') || n.includes('nephrolepis') || n.includes('asplenium') || n.includes('athyrium')) return '🌿';
-                    if (n.includes('ananas')) return '🍍';
-                    if (n.includes('kavovnik') || n.includes('coffea')) return '☕';
-                    if (n.includes('kocka') || n.includes('cyperus')) return '🐈';
-                    if (n.includes('divny janko') || n.includes('epipremnum') || n.includes('syngonium') || n.includes('tradescantia') || n.includes('hedera') || n.includes('brectan')) return '🍃';
+                    const n = name.toLowerCase();
+                    if (n.includes('kaktus') || n.includes('sukulent')) return '🌵';
+                    if (n.includes('monstera') || n.includes('fikus')) return '🌴';
+                    if (n.includes('lopatkovec')) return '✨';
                     return '🪴';
                 },
                 
@@ -186,39 +188,14 @@
                     const savedSeason = localStorage.getItem('vibeJungleSeasonPro');
                     if (saved) this.plants = JSON.parse(saved);
                     if (savedSeason) this.season = savedSeason;
-
-                    if ("Notification" in window && Notification.permission !== "granted") {
-                        Notification.requestPermission();
-                    }
-
-                    if ("serviceWorker" in navigator) {
-                        navigator.serviceWorker.register("sw.js").catch(err => console.log("SW error", err));
-                    }
-
-                    this.$watch('plants', v => localStorage.setItem('vibeJunglePro', JSON.stringify(v)));
-                    
-                    // Přepočet hned po načtení a pak každou minutu
                     this.recalculateAll();
                     setInterval(() => this.recalculateAll(), 60000);
                 },
 
-                sendNotify(title, body) {
-                    if (Notification.permission === "granted" && "serviceWorker" in navigator) {
-                        navigator.serviceWorker.ready.then(reg => {
-                            reg.showNotification(title, { 
-                                body: body,
-                                icon: 'icon-192.png',
-                                vibrate: [200, 100, 200] 
-                            });
-                        });
-                    }
-                },
-
                 checkLibrary() {
-                    const input = this.newName.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                    if (input.length < 2) return;
-                    const match = this.fullLibrary.find(item => item.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(input));
-                    if (match) { 
+                    const input = this.newName.toLowerCase().trim();
+                    const match = this.fullLibrary.find(item => item.n.toLowerCase().includes(input));
+                    if (match && input.length > 2) { 
                         this.summerDays = match.s; 
                         this.winterDays = match.w; 
                     }
@@ -227,12 +204,9 @@
                 addPlant() {
                     if (!this.newName) return;
                     const selectedDate = new Date(this.lastWateredDate);
-                    selectedDate.setHours(12, 0, 0, 0); // Sjednocení času
-                    
+                    selectedDate.setHours(12, 0, 0, 0);
                     const now = new Date();
-                    const diffMs = now.getTime() - selectedDate.getTime();
-                    const diffDays = Math.floor(diffMs / 86400000);
-                    
+                    const diffDays = Math.floor((now - selectedDate) / 86400000);
                     const maxDays = this.season === 'summer' ? this.summerDays : this.winterDays;
                     
                     this.plants.push({
@@ -244,9 +218,7 @@
                         lastWatered: selectedDate.toLocaleDateString('cs-CZ'),
                         lastWateredMs: selectedDate.getTime()
                     });
-                    
                     this.newName = '';
-                    this.lastWateredDate = new Date().toISOString().split('T')[0];
                 },
 
                 waterPlant(id) {
@@ -271,12 +243,7 @@
                     this.plants.forEach(p => {
                         const maxDays = this.season === 'summer' ? p.summerDays : p.winterDays;
                         const daysElapsed = Math.floor((now - p.lastWateredMs) / 86400000);
-                        const oldDays = p.daysLeft;
                         p.daysLeft = Math.max(0, maxDays - daysElapsed);
-                        
-                        if (p.daysLeft === 0 && oldDays > 0) {
-                            this.sendNotify("Žíznivá kytka! 💧", `${p.name} potřebuje tvou péči.`);
-                        }
                     });
                 },
 
