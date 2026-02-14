@@ -51,7 +51,7 @@
                     <input x-model="lastWateredDate" type="date" class="w-full bg-gray-50 border-none rounded-2xl px-5 py-4 mt-1 font-bold text-gray-700 focus:ring-2 focus:ring-green-500 outline-none">
                 </div>
             </div>
-            <button @click="addPlant(); sendNotify('Povedlo se! 🎉', 'Právě jsi přidala kytku do sbírky.')" class="w-full mt-6 bg-green-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl active:scale-[0.98]">
+            <button @click="addPlant(); sendNotify('Povedlo se! 🎉', 'Kytka byla přidána do sbírky.')" class="w-full mt-6 bg-green-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-xl active:scale-[0.98]">
                 Přidat do sbírky +
             </button>
         </div>
@@ -163,7 +163,7 @@
                     { n: 'Zamiokulkas', s: 14, w: 25 },
                     { n: 'Zelenec', s: 4, w: 10 },
                     { n: 'Zvonek (Campanula)', s: 3, w: 7 }
-                ], // <-- TADY BYLA TA CHYBA (chybějící závorka)
+                ],
 
                 getIcon(name) {
                     const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -196,6 +196,9 @@
                     }
 
                     this.$watch('plants', v => localStorage.setItem('vibeJunglePro', JSON.stringify(v)));
+                    
+                    // Přepočet hned po načtení a pak každou minutu
+                    this.recalculateAll();
                     setInterval(() => this.recalculateAll(), 60000);
                 },
 
@@ -204,6 +207,7 @@
                         navigator.serviceWorker.ready.then(reg => {
                             reg.showNotification(title, { 
                                 body: body,
+                                icon: 'icon-192.png',
                                 vibrate: [200, 100, 200] 
                             });
                         });
@@ -214,15 +218,23 @@
                     const input = this.newName.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                     if (input.length < 2) return;
                     const match = this.fullLibrary.find(item => item.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(input));
-                    if (match) { this.summerDays = match.s; this.winterDays = match.w; }
+                    if (match) { 
+                        this.summerDays = match.s; 
+                        this.winterDays = match.w; 
+                    }
                 },
 
                 addPlant() {
                     if (!this.newName) return;
                     const selectedDate = new Date(this.lastWateredDate);
+                    selectedDate.setHours(12, 0, 0, 0); // Sjednocení času
+                    
                     const now = new Date();
-                    const diffDays = Math.floor(Math.abs(now - selectedDate) / 86400000);
+                    const diffMs = now.getTime() - selectedDate.getTime();
+                    const diffDays = Math.floor(diffMs / 86400000);
+                    
                     const maxDays = this.season === 'summer' ? this.summerDays : this.winterDays;
+                    
                     this.plants.push({
                         id: Date.now(),
                         name: this.newName,
@@ -232,31 +244,38 @@
                         lastWatered: selectedDate.toLocaleDateString('cs-CZ'),
                         lastWateredMs: selectedDate.getTime()
                     });
+                    
                     this.newName = '';
                     this.lastWateredDate = new Date().toISOString().split('T')[0];
                 },
 
                 waterPlant(id) {
                     const now = new Date();
+                    now.setHours(12, 0, 0, 0);
                     let p = this.plants.find(p => p.id === id);
-                    p.lastWatered = now.toLocaleDateString('cs-CZ');
-                    p.lastWateredMs = now.getTime();
-                    p.daysLeft = this.season === 'summer' ? p.summerDays : p.winterDays;
+                    if (p) {
+                        p.lastWatered = now.toLocaleDateString('cs-CZ');
+                        p.lastWateredMs = now.getTime();
+                        p.daysLeft = this.season === 'summer' ? p.summerDays : p.winterDays;
+                    }
                 },
 
                 triggerDelete(id) { this.plantToDelete = id; this.showDeleteModal = true; },
-                deletePlant() { this.plants = this.plants.filter(p => p.id !== this.plantToDelete); this.showDeleteModal = false; },
+                deletePlant() { 
+                    this.plants = this.plants.filter(p => p.id !== this.plantToDelete); 
+                    this.showDeleteModal = false; 
+                },
 
                 recalculateAll() {
                     const now = new Date().getTime();
                     this.plants.forEach(p => {
                         const maxDays = this.season === 'summer' ? p.summerDays : p.winterDays;
-                        const daysElapsed = Math.floor((now - p.lastWateredMs) / 86400;
+                        const daysElapsed = Math.floor((now - p.lastWateredMs) / 86400000);
                         const oldDays = p.daysLeft;
                         p.daysLeft = Math.max(0, maxDays - daysElapsed);
                         
                         if (p.daysLeft === 0 && oldDays > 0) {
-                            this.sendNotify("Žíznivá kytka! 💧", `${p.name} potřebuje zalít.`);
+                            this.sendNotify("Žíznivá kytka! 💧", `${p.name} potřebuje tvou péči.`);
                         }
                     });
                 },
@@ -271,12 +290,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
